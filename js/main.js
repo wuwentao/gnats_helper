@@ -13,11 +13,11 @@ var  pr_template_list="__PR_TEMPLATE_LIST__";
 var  query_template_list="__QUERY_TEMPLATE_LIST__";
 var  gnats_helper_ver="0.1" 
 
+var  default_name = "Default PR template";
 var  default_synopsis = "Department:Project:Feature-Tested:Subcategory(optional):<one-line summary>";
 var  default_description = "##################################################################\n1.    SYMPTOMS AND FREQUENCY OF OCCURRENCE\n##################################################################\nREPLACE WITH SYMPTOMS AND FREQUENCY OF OCCURRENCE\n\n\n\n##################################################################\n2.    EXPECTED-BEHAVIOR\n##################################################################\nREPLACE WITH EXPECTED-BEHAVIOR\n\n\n\n##################################################################\n3.    ORIGINATOR'S-ANALYSIS\n      E.G. MAIN-FINDINGS, EXCERPTS OF RELEVANT COUNTERS/LOGS/SHOW COMMANDS\n##################################################################\nREPLACE WITH ORIGINATOR'S-ANALYSIS \n\n\n\n#################################################################################\n4.    MORE-INFO\n      E.G. LOCATION OF COMPLETE CONFIGS, SYSLOGS, FDA OUTPUT, DETAILED COUNTERS\n#################################################################################\nREPLACE WITH MORE-INFO\n\n\n##################################################################\n5.    METADATA (DO NOT MODIFY METADATA VALUES!!!)\n##################################################################\nMETADATA_START\nTEMPLATE_TYPE:SBU\nTEMPLATE_VERSION:2012071302\nMETADATA_END";
 var  default_environment = "##################################################################\n1.    TOPOLOGY\n##################################################################\nREPLACE WITH TOPOLOGY\n\n##################################################################\n2.    TRAFFIC-PROFILE\n##################################################################\n------------------------------------------------------------------\n- TRAFFIC PROTOCOLS SENT\n------------------------------------------------------------------\nREPLACE WITH TRAFFIC PROTOCOLS SENT\n\n------------------------------------------------------------------\n- EXTERNAL TRAFFIC GENERATOR\'S PROFILE\n------------------------------------------------------------------\nN/A or REPLACE HERE";
 var  default_how_to_repeat = "##################################################################\nSTEPS TO REPRODUCE\n##################################################################\nREPLACE HERE\n\nOR\n\n##################################################################\nTEST-STEPS (if reproduce steps not known)\n##################################################################\nREPLACE HERE";
-
 
 
 
@@ -44,13 +44,7 @@ function get_focus(obj_id) {
 //		alert("You're using IE");	
 		document.getElementById(obj_id).click();
 		document.getElementById(obj_id).focus();	
-/*		setTimeout('document.getElementById(obj_id).select()', 5000);
-		setTimeout(function(){
-			document.getElementById(obj_id).focus();
-			document.getElementById(obj_id).select();	
-			document.getElementById(obj_id).click();	
-			}, 1000); 	
-*/
+
 	} else {
 		//alert(navigator.appName);  
 		document.getElementById(obj_id).focus();
@@ -185,6 +179,11 @@ var mytemp=/user:\ *(\w*)/im;
 var myresult=dbinfo.match(mytemp);
 var myname=myresult[1];
 
+//get the pr/query template name list from localStorage
+var memu_pr_template_list//=local_to_obj(pr_template_list);
+//var memu_query_template_list=local_to_obj(query_template_list);;
+
+
 var mymenu=MenuUI();
 
 	//add UI to gnats
@@ -218,7 +217,7 @@ var mymenu=MenuUI();
 	});
 
 
-//-----------------UI界面--------------------------
+//-----------------UI--------------------------
 
 
 function MenuUI() {
@@ -268,11 +267,14 @@ function MenuUI() {
 			html.push('<li><a href="#">vSRX</a>');
 				html.push('<ul>');
 				html.push('<li><a href="#">X46</a>');
+				
+				if (memu_pr_template_list) {
 					html.push('<ul>');
-					html.push('<li><a href="#">X46-D10</a></li>');
-					html.push('<li><a href="#">X46-D15</a></li>');
-					html.push('<li><a href="#">X46-D20</a></li>');
+						for (var i=0;i<memu_pr_template_list.length;i++) {
+							html.push('<li><a href="#">'+memu_pr_template_list[i]+'</a></li>');
+							}
 					html.push('</ul>');
+				}
 				html.push('</li>');
 				html.push('<li><a href="#">X47</a></li>');
 				html.push('<li><a href="#">X48</a></li>');
@@ -335,21 +337,19 @@ function get_Browerinfo() {
 	return userinfo;
 }
 
-//javascript object to localStorage
-function obj_to_local(obj_name,local_name) {
-		if ( obj_name && local_name)  {
-			localStorage.setItem(local_name,JSON.stringify(obj_name));
-		}
-}
-
-//localStorage to javascript object
+//localStorage object to javascript object
 function local_to_obj(local_name) {
 		if (local_name)	{
 			var obj_name = JSON.parse(localStorage.getItem(local_name));
 			return obj_name;
 		}
 }
-
+//javascript object to localStorage
+function obj_to_local(obj_name,local_name) {
+		if ( obj_name && local_name)  {
+			localStorage.setItem(local_name,JSON.stringify(obj_name));
+		}
+}
 
 var form_id_list=["synopsis","reported-in","last-known-working-release","submitter-id","found-during","functional-area","class","pr-impact","product","platform","software-image","category","client-os","client-browser","problem-level","cve-id","cvss-base-score","cwe-id","keywords","configuration","notify-list","customer","related-prs","rli","npi-program","testcase-id","jtac-case-id","support-notes","supporting-device-release","supporting-device-product","supporting-device-platform","supporting-device-sw-image","description","corefile-location","corefile-stacktrace","environment","how-to-repeat","beta-programs","release-build-date","beta-customers","release-deploy-date","fix"];
  
@@ -436,7 +436,7 @@ function replace_default_value(obj_name) {
 
 //display a form to input the template name,Step2
 function get_template_name() {
-	template_name=window.prompt("\n Ok,All the form data has been saved!\n\nPlease input the template name:",myname+"_template1");
+	template_name=window.prompt("\n All the form data has been saved!\n\nPlease input the template name:",myname+"_template1");
 	return template_name;
 }
 
@@ -448,7 +448,7 @@ function template_name_to_local(template_name,local_name) {
 	if (template_name && local_name) {
 		var local_pr_template_list = local_to_obj(local_name);
 		if (!local_pr_template_list) {
-			var my_pr_template_list=new Array();
+			var my_pr_template_list=new Object();
 			my_pr_template_list[0]=template_name;
 		}
 		else {
@@ -495,5 +495,4 @@ function save_web_to_local() {
 				template_data_to_local(my_template_obj,my_template_name)
 			}
 }
-
 

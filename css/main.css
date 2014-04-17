@@ -47,8 +47,8 @@ body { padding-top: 56px; }
 	transition: color 0.2s linear, background 0.2s linear;
 }
 .venus-menu li:hover > a, .venus-menu li.active a {
-	background: #2980B9;
-	color: #ECF0F1;
+	background: #3498DB;
+	color: #000;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 95%, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0)));
     background-image: -moz-linear-gradient(-90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
     background-image: -o-linear-gradient(-90deg,rgba(255,255,255,0.5),rgba(255,255,25,0));
@@ -57,7 +57,7 @@ body { padding-top: 56px; }
 	color: #fff;
 }
 .venus-menu > li:hover > a i, .venus-menu li.active a i {
-	color: #ECF0F1;
+	color: #000;
 }
 .venus-menu ul, .venus-menu ul li ul {
 	list-style: none;
@@ -141,16 +141,16 @@ body { padding-top: 56px; }
 	transition: background 0.2s linear;
 }
 .venus-menu ul li:hover > a {
-	background: #2980B9;
+	background: #3498DB;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 95%, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0)));
     background-image: -moz-linear-gradient(-90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
     background-image: -o-linear-gradient(-90deg,rgba(255,255,255,0.5),rgba(255,255,25,0));
 }
 .venus-menu > li > ul > li:first-child:hover a:before {
-	border-bottom-color: #2980B9;
+	border-bottom-color: #3498DB;
 }
 .venus-menu > li > ul > li ul li:first-child:hover a:before {
-	border-right-color: #2980B9;
+	border-right-color: #3498DB;
 }
 .venus-menu > li .indicator {
 	position: absolute;
@@ -164,7 +164,7 @@ body { padding-top: 56px; }
 	transition: color 0.2s linear;
 }
 .venus-menu > li:hover > .indicator {
-	color: #ECF0F1;
+	color: #000;
 }
 .venus-menu ul > li .indicator {
 	top: 14px;
