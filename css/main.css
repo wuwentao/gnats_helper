@@ -2,10 +2,16 @@
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 300;
-  src: local('Open Sans Light'), local('OpenSans-Light'), url(775413/attachments/OpenSans.woff) format('woff');
+  src: local('Open Sans Light'), local('OpenSans-Light'), url(https://gnats.juniper.net/web/default/775413/attachments/OpenSans.woff) format('woff');
 }
+#wtwu_div{
+      position:fixed;
+      bottom:50px;
+      right:10px;
+}
+
 body { padding-top: 56px; }
-#wtwu-content {
+#wtwu_content {
 	margin: 0px 0px;
 	position:fixed;
 	top:0px;
@@ -13,10 +19,10 @@ body { padding-top: 56px; }
 	right:0px;
 	z-index:99;
 }
-.venus-menu {
+.wtwu_menu {
 	margin: 30px 0 0px 0;
 }
-.venus-menu {
+.wtwu_menu {
 	width: 100%;
 	margin: 0;
 	padding: 0;
@@ -27,7 +33,7 @@ body { padding-top: 56px; }
 	background: #3498DB;
 	box-shadow: 0 1px 3px #dedede;
 }
-.venus-menu li {
+.wtwu_menu li {
 	display: inline-block;
 	margin: 0;
 	padding: 0;
@@ -35,7 +41,7 @@ body { padding-top: 56px; }
 	line-height: 20px;
 	position: relative;
 }
-.venus-menu > li > a {
+.wtwu_menu > li > a {
 	padding: 18px 24px;
 	font-size: 18px;
 	color: #fff;
@@ -46,20 +52,20 @@ body { padding-top: 56px; }
 	-o-transition: color 0.2s linear, background 0.2s linear;
 	transition: color 0.2s linear, background 0.2s linear;
 }
-.venus-menu li:hover > a, .venus-menu li.active a {
+.wtwu_menu li:hover > a, .wtwu_menu li.active a {
 	background: #3498DB;
 	color: #000;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 95%, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0)));
     background-image: -moz-linear-gradient(-90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
     background-image: -o-linear-gradient(-90deg,rgba(255,255,255,0.5),rgba(255,255,25,0));
 }
-.venus-menu > li > a i {
+.wtwu_menu > li > a i {
 	color: #fff;
 }
-.venus-menu > li:hover > a i, .venus-menu li.active a i {
+.wtwu_menu > li:hover > a i, .wtwu_menu li.active a i {
 	color: #000;
 }
-.venus-menu ul, .venus-menu ul li ul {
+.wtwu_menu ul, .wtwu_menu ul li ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
@@ -68,12 +74,18 @@ body { padding-top: 56px; }
 	z-index: 99;
 	width: 170px;
 }
-.venus-menu ul {
+.wtwu_menu ul {
+	top: 47px;
+	left: 0;
+	padding-top: 10px;
+}
+/*
+.wtwu_menu ul {
 	top: 56px;
 	left: 0;
 	padding-top: 10px;
 }
-.venus-menu > li > ul > li:first-child a:before {
+.wtwu_menu > li > ul > li:first-child a:before {
 	content: '';
 	position: absolute;
 	bottom: 48px;
@@ -88,7 +100,7 @@ body { padding-top: 56px; }
     background-image: -moz-linear-gradient(-90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
     background-image: -o-linear-gradient(-90deg,rgba(255,255,255,0.5),rgba(255,255,25,0));
 }
-.venus-menu > li > ul > li ul li:first-child a:before {
+.wtwu_menu > li > ul > li ul li:first-child a:before {
 	content: '';
 	position: absolute;
 	bottom: 16px;
@@ -103,12 +115,18 @@ body { padding-top: 56px; }
     background-image: -moz-linear-gradient(-90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
     background-image: -o-linear-gradient(-90deg,rgba(255,255,255,0.5),rgba(255,255,25,0));
 }
-.venus-menu ul li ul {
+.wtwu_menu ul li ul {
 	top: 0;
 	left: 100%;
 	padding-left: 10px;
 }
-.venus-menu ul li {
+*/
+.wtwu_menu ul li ul {
+	top: 0;
+	left: 100%;
+	padding-left: 1px;
+}
+.wtwu_menu ul li {
 	clear: both;
 	width: 100%;
 	border: none;
@@ -122,7 +140,7 @@ body { padding-top: 56px; }
 	left: 0;
 	top: 0;
 }
-.venus-menu ul li a {
+.wtwu_menu ul li a {
 	padding: 14px 20px;
 	width: 100%;
 	color: #fff;
@@ -140,19 +158,19 @@ body { padding-top: 56px; }
 	-o-transition: background 0.2s linear;
 	transition: background 0.2s linear;
 }
-.venus-menu ul li:hover > a {
+.wtwu_menu ul li:hover > a {
 	background: #3498DB;
 	background-image: -webkit-gradient(linear, 0% 0%, 0% 95%, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0)));
     background-image: -moz-linear-gradient(-90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
     background-image: -o-linear-gradient(-90deg,rgba(255,255,255,0.5),rgba(255,255,25,0));
 }
-.venus-menu > li > ul > li:first-child:hover a:before {
+.wtwu_menu > li > ul > li:first-child:hover a:before {
 	border-bottom-color: #3498DB;
 }
-.venus-menu > li > ul > li ul li:first-child:hover a:before {
+.wtwu_menu > li > ul > li ul li:first-child:hover a:before {
 	border-right-color: #3498DB;
 }
-.venus-menu > li .indicator {
+.wtwu_menu > li .indicator {
 	position: absolute;
 	color: #fff;
 	top: 19px;
@@ -163,21 +181,21 @@ body { padding-top: 56px; }
 	-o-transition: color 0.2s linear;
 	transition: color 0.2s linear;
 }
-.venus-menu > li:hover > .indicator {
+.wtwu_menu > li:hover > .indicator {
 	color: #000;
 }
-.venus-menu ul > li .indicator {
+.wtwu_menu ul > li .indicator {
 	top: 14px;
 	right: 8px;
 	color: #fff;
 }
-.venus-menu i {
+.wtwu_menu i {
 	line-height: 20px !important;
 	margin-right: 6px;
 	font-size: 20px;
 	float: left;
 }
-.venus-menu > li.showhide {
+.wtwu_menu > li.showhide {
 	display: none;
 	width: 100%;
 	height: 46px;
@@ -186,28 +204,28 @@ body { padding-top: 56px; }
 	border-bottom: solid 1px rgba(0, 0, 0, 0.1);
 	background: #fff;
 }
-.venus-menu > li.showhide span.title {
+.wtwu_menu > li.showhide span.title {
 	margin: 13px 0 0 20px;
 	float: left;
 }
-.venus-menu > li.showhide span.icon {
+.wtwu_menu > li.showhide span.icon {
 	margin: 16px 20px;
 	float: right;
 }
-.venus-menu > li.showhide .icon em {
+.wtwu_menu > li.showhide .icon em {
 	margin-bottom: 3px;
 	display: block;
 	width: 20px;
 	height: 2px;
 	background: #ccc;
 }
-.venus-menu li.search {
+.wtwu_menu li.search {
 	float: right;
 }
-.venus-menu li.search form {
+.wtwu_menu li.search form {
 	margin: 13px 20px 0 0;
 }
-.venus-menu li.search form input.search {
+.wtwu_menu li.search form input.search {
 	height: 26px;
 	float: right;
 	padding-left: 5px;
@@ -220,7 +238,7 @@ body { padding-top: 56px; }
 	-webkit-transition: border .3s linear;
 	transition: border .3s linear;
 }
-.venus-menu li.search form input.search:focus {
+.wtwu_menu li.search form input.search:focus {
 	border-color: #fff;
 }
 
@@ -302,23 +320,23 @@ transform: translateX(0);
 }
 
 @media only screen and (max-width: 768px) {
-.venus-menu li {
+.wtwu_menu li {
 	display: block;
 	width: 100%;
 }
-.venus-menu > li > a {
+.wtwu_menu > li > a {
 	padding: 13px 0 14px 20px;
 }
-.venus-menu > li.brand {
+.wtwu_menu > li.brand {
 	display: none !important;
 }
-.venus-menu a {
+.wtwu_menu a {
 	width: 100%;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 }
-.venus-menu ul, .venus-menu ul li ul {
+.wtwu_menu ul, .wtwu_menu ul li ul {
 	width: 100%;
 	padding: 0;
 	left: 0;
@@ -328,49 +346,49 @@ transform: translateX(0);
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 }
-.venus-menu > li > ul > li:first-child a:before, .venus-menu > li > ul > li ul li:first-child a:before {
+.wtwu_menu > li > ul > li:first-child a:before, .wtwu_menu > li > ul > li ul li:first-child a:before {
 	border: none;
 }
-.venus-menu ul li {
+.wtwu_menu ul li {
 	border-left: none;
 	border-right: none;
 }
-.venus-menu ul li a {
+.wtwu_menu ul li a {
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
-.venus-menu ul > li > a {
+.wtwu_menu ul > li > a {
 	padding-left: 40px !important;
 }
-.venus-menu > li .indicator {
+.wtwu_menu > li .indicator {
 	top: 14px;
 	right: 20px;
 	font-size: 20px;
 }
-.venus-menu ul > li .indicator {
+.wtwu_menu ul > li .indicator {
 	top: 10px;
 	right: 20px;
 }
-.venus-menu li.search form {
+.wtwu_menu li.search form {
 	margin: 12px 18px 0 18px;
 }
-.venus-menu li.search form input.search {
+.wtwu_menu li.search form input.search {
 	width: 100%;
 	margin-bottom: 12px;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 }
-.venus-menu > li > ul > li > a {
+.wtwu_menu > li > ul > li > a {
 	padding-left: 40px !important;
 }
-.venus-menu > li > ul > li > ul > li > a {
+.wtwu_menu > li > ul > li > ul > li > a {
 	padding-left: 60px !important;
 }
-.venus-menu > li > ul > li > ul > li > ul > li > a {
+.wtwu_menu > li > ul > li > ul > li > ul > li > a {
 	padding-left: 80px !important;
 }
 }
-.venus-menu {
+.wtwu_menu {
 	margin: 0px 0 10px 0;
 }

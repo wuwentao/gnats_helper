@@ -13,160 +13,36 @@ var  pr_template_list="__PR_TEMPLATE_LIST__";
 var  query_template_list="__QUERY_TEMPLATE_LIST__";
 var  gnats_helper_ver="0.1" 
 
-var  default_name = "Default PR template";
-var  default_synopsis = "Department:Project:Feature-Tested:Subcategory(optional):<one-line summary>";
-var  default_description = "##################################################################\n1.    SYMPTOMS AND FREQUENCY OF OCCURRENCE\n##################################################################\nREPLACE WITH SYMPTOMS AND FREQUENCY OF OCCURRENCE\n\n\n\n##################################################################\n2.    EXPECTED-BEHAVIOR\n##################################################################\nREPLACE WITH EXPECTED-BEHAVIOR\n\n\n\n##################################################################\n3.    ORIGINATOR'S-ANALYSIS\n      E.G. MAIN-FINDINGS, EXCERPTS OF RELEVANT COUNTERS/LOGS/SHOW COMMANDS\n##################################################################\nREPLACE WITH ORIGINATOR'S-ANALYSIS \n\n\n\n#################################################################################\n4.    MORE-INFO\n      E.G. LOCATION OF COMPLETE CONFIGS, SYSLOGS, FDA OUTPUT, DETAILED COUNTERS\n#################################################################################\nREPLACE WITH MORE-INFO\n\n\n##################################################################\n5.    METADATA (DO NOT MODIFY METADATA VALUES!!!)\n##################################################################\nMETADATA_START\nTEMPLATE_TYPE:SBU\nTEMPLATE_VERSION:2012071302\nMETADATA_END";
-var  default_environment = "##################################################################\n1.    TOPOLOGY\n##################################################################\nREPLACE WITH TOPOLOGY\n\n##################################################################\n2.    TRAFFIC-PROFILE\n##################################################################\n------------------------------------------------------------------\n- TRAFFIC PROTOCOLS SENT\n------------------------------------------------------------------\nREPLACE WITH TRAFFIC PROTOCOLS SENT\n\n------------------------------------------------------------------\n- EXTERNAL TRAFFIC GENERATOR\'S PROFILE\n------------------------------------------------------------------\nN/A or REPLACE HERE";
-var  default_how_to_repeat = "##################################################################\nSTEPS TO REPRODUCE\n##################################################################\nREPLACE HERE\n\nOR\n\n##################################################################\nTEST-STEPS (if reproduce steps not known)\n##################################################################\nREPLACE HERE";
+var  default_name = "Default template";
+var  default_template = '{"synopsis":"Department:Project:Feature-Tested:Subcategory(optional):<one-line summary>"}';
+var  public_name="__PUBLIC_PR_TEMPLATE__"
+var  public_template =  '{"description":"##################################################################\n1.    SYMPTOMS AND FREQUENCY OF OCCURRENCE\n##################################################################\nREPLACE WITH SYMPTOMS AND FREQUENCY OF OCCURRENCE\n\n\n\n##################################################################\n2.    EXPECTED-BEHAVIOR\n##################################################################\nREPLACE WITH EXPECTED-BEHAVIOR\n\n\n\n##################################################################\n3.    ORIGINATOR-ANALYSIS\n      E.G. MAIN-FINDINGS, EXCERPTS OF RELEVANT COUNTERS/LOGS/SHOW COMMANDS\n##################################################################\nREPLACE WITH ORIGINATOR-ANALYSIS \n\n\n\n#################################################################################\n4.    MORE-INFO\n      E.G. LOCATION OF COMPLETE CONFIGS, SYSLOGS, FDA OUTPUT, DETAILED COUNTERS\n#################################################################################\nREPLACE WITH MORE-INFO\n\n\n##################################################################\n5.    METADATA (DO NOT MODIFY METADATA VALUES!!!)\n##################################################################\nMETADATA_START\nTEMPLATE_TYPE:SBU\nTEMPLATE_VERSION:2012071302\nMETADATA_END",\
+						  "environment":"##################################################################\n1.    TOPOLOGY\n##################################################################\nREPLACE WITH TOPOLOGY\n\n##################################################################\n2.    TRAFFIC-PROFILE\n##################################################################\n------------------------------------------------------------------\n- TRAFFIC PROTOCOLS SENT\n------------------------------------------------------------------\nREPLACE WITH TRAFFIC PROTOCOLS SENT\n\n------------------------------------------------------------------\n- EXTERNAL TRAFFIC GENERATOR\'S PROFILE\n------------------------------------------------------------------\nN/A or REPLACE HERE",\
+						  "how-to-repeat":"##################################################################\nSTEPS TO REPRODUCE\n##################################################################\nREPLACE HERE\n\nOR\n\n##################################################################\nTEST-STEPS (if reproduce steps not known)\n##################################################################\nREPLACE HERE"}';
 
-
-
-//add sbupdt specific template 
-var keywords_template = "12.1x47d10sbupdt,sbupdt,vsrx,testbed,module/feature";
-var notifylist_template = "sbu-pdt-bug,bug-sw-vsrx-platform";
-var rli_template = "21988";
-var plannedrelease_template = "DEV_SRX_12Q1_X47_BRANCH";
-// Templates (note: multi-line values need to include escaped newline chars (\n) and backslash escape (\) at the end of each line
-var synopsis_template = "SBU-PDT X47 VSRX:Feature-Tested:Subcategory(optional):<one-line summary>";
-var description_template = "##################################################################\n1.    SYMPTOMS AND FREQUENCY OF OCCURRENCE\n##################################################################\nREPLACE WITH SYMPTOMS AND FREQUENCY OF OCCURRENCE\n\n\n\n##################################################################\n2.    EXPECTED-BEHAVIOR\n##################################################################\nREPLACE WITH EXPECTED-BEHAVIOR\n\n\n\n##################################################################\n3.    ORIGINATOR'S-ANALYSIS\n      E.G. MAIN-FINDINGS, EXCERPTS OF RELEVANT COUNTERS/LOGS/SHOW COMMANDS\n##################################################################\nREPLACE WITH ORIGINATOR'S-ANALYSIS \n\n\n\n#################################################################################\n4.    MORE-INFO\n      E.G. LOCATION OF COMPLETE CONFIGS, SYSLOGS, FDA OUTPUT, DETAILED COUNTERS\n#################################################################################\nREPLACE WITH MORE-INFO\n\n\n##################################################################\n5.    METADATA (DO NOT MODIFY METADATA VALUES!!!)\n##################################################################\nMETADATA_START\nTEMPLATE_TYPE:SBU\nTEMPLATE_VERSION:2012071302\nMETADATA_END";
-var environment_template = "##################################################################\n1.    TOPOLOGY\n##################################################################\nREPLACE WITH TOPOLOGY\n\n##################################################################\n2.    TRAFFIC-PROFILE\n##################################################################\n------------------------------------------------------------------\n- TRAFFIC PROTOCOLS SENT\n------------------------------------------------------------------\nREPLACE WITH TRAFFIC PROTOCOLS SENT\n\n------------------------------------------------------------------\n- EXTERNAL TRAFFIC GENERATOR\'S PROFILE\n------------------------------------------------------------------\nN/A or REPLACE HERE";
-var how_to_repeat_template = "##################################################################\nSTEPS TO REPRODUCE\n##################################################################\nREPLACE HERE\n\nOR\n\n##################################################################\nTEST-STEPS (if reproduce steps not known)\n##################################################################\nREPLACE HERE";
-
-
-
-var obj_id;
-var obj_value;
-var template_alert_msg = '';
-
-// Function is to get focus of text objects with input hints such as Planned-release, Notify-List 
-function get_focus(obj_id) {
-	if (navigator.appName == "Microsoft Internet Explorer") {
-//		alert("You're using IE");	
-		document.getElementById(obj_id).click();
-		document.getElementById(obj_id).focus();	
-
-	} else {
-		//alert(navigator.appName);  
-		document.getElementById(obj_id).focus();
-	}
-}
-
-// Function is to set template value to normal text object such as Keywords, RLI 
-function set_value_1(obj_id,obj_value) {
-
-        if (document.getElementById(obj_id).value.search(obj_value) == -1) {
-                if (document.getElementById(obj_id).value.length > 0) {
-                        template_alert_msg = template_alert_msg + obj_id + ' has been prepended with template\n';
-                }
-                document.getElementById(obj_id).value = obj_value + document.getElementById(obj_id).value;
-        }
-
-}
-
-// Function is to set template value to text objects with input hints such as Planned-Release and Notify-List
-function set_value_2(obj_id, obj_value) {
-
-	get_focus(obj_id);
-
-        if (document.getElementById(obj_id).value.search('type for auto-completion') == -1) {
-                if (document.getElementById(obj_id).value.search(obj_value) == -1) {
-                        if (document.getElementById(obj_id).value.length > 0) {
-                        template_alert_msg = template_alert_msg + obj_id + ' has been prepended with template\n';
-                        }
-		document.getElementById(obj_id).value = obj_value + document.getElementById(obj_id).value;
-                }
-        } else {
-		document.getElementById(obj_id).value = obj_value;
-	}
-
-}
-
-// Function is to create onchange event for select list
-function fireEvent(obj_id,event){
-        if (document.createEventObject){
-          // dispatch for IE
-          ////var evt = document.createEventObject();
-          document.getElementById(obj_id).fireEvent('on'+event); 
-	} else { 
-	 var evt=document.createEvent("HTMLEvents");//FF 
-         evt.initEvent(event, true, true);  
-         document.getElementById(obj_id).dispatchEvent(evt); 
-	}     
-}
-
-function _fireEvent(obj_id, obj_value, event) {
-        var act = "on" + event;
-	var el = document.getElementById(obj_id);
-	el.onchange = function () {document.getElementById(obj_id).value = obj_value;}
-        fireEvent(obj_id,event);
-}
-
-// Function is to generate template
-function invoke_templates() {
-//	var template_alert_msg = '';
-
-
-	// Synopsis: always overwrite
-	if (document.getElementById('synopsis').value.length > 0 && document.getElementById('synopsis').value.search(synopsis_template) == -1) {
-		template_alert_msg = template_alert_msg + 'Synopsis has been overwritten with template value\n';
-		document.getElementById('synopsis').value = synopsis_template;
-	} else if (document.getElementById('synopsis').value.length == 0) {
-		document.getElementById('synopsis').value = synopsis_template;
-	}
-
-	// Description: Only prepend if template does not exist
-	if (document.getElementById('description').value.search('METADATA_START') == -1 && document.getElementById('description').value.search('METADATA_END') == -1) {
-		if (document.getElementById('description').value.length > 0) {
-			template_alert_msg = template_alert_msg + 'Description has been prepended with template\n';
+//check localStore
+function check_public() {
+	// if pr_template_list not exist in localStorage
+	// it's first time running,add default value to localStorage
+	if (!window.localStorage.getItem(pr_template_list)) {
+		window.localStorage.setItem(pr_template_list,default_name);
+		window.localStorage.setItem(default_name,default_synopsis);
 		}
-		document.getElementById('description').value = description_template + document.getElementById('description').value;
-	}
-
-	// Environment: Only prepend if template does not exist
-	if (document.getElementById('environment').value.search('1.    TOPOLOGY') == -1) {
-		if (document.getElementById('environment').value.length > 0) {
-			template_alert_msg = template_alert_msg + 'Environment has been prepended with template\n';
-		}
-		document.getElementById('environment').value = environment_template + document.getElementById('environment').value;
-	}
-
-	// How-To-Repeat: Only prepend if template does not exist
-	if (document.getElementById('how-to-repeat').value.search('STEPS TO REPRODUCE') == -1 && document.getElementById('how-to-repeat').value.search('TEST-STEPS') == -1) {
-		if (document.getElementById('how-to-repeat').value.length > 0) {
-			template_alert_msg = template_alert_msg + 'How-To-Repeat has been overwritten with template value\n';
-		}
-		document.getElementById('how-to-repeat').value = how_to_repeat_template + document.getElementById('how-to-repeat').value;
-	}
-
-	//add sbupdt specific template
-
-
-	document.getElementById('submitter-id').onload = _fireEvent('submitter-id', 'systest', 'change'); 
-	document.getElementById('product').onload = _fireEvent('product', 'vsrx-series', 'change');
-
-	set_value_1('keywords', keywords_template); 
-    set_value_1('rli', rli_template);   
-	
-	set_value_2('planned-release{1}', plannedrelease_template);
-	set_value_2('notify-list', notifylist_template);
-
-       
-	setTimeout(function() {document.getElementById('found-during').value = "Product delivery test";}, 0);
-	document.getElementById('functional-area').value = "software"; 
-	//document.getElementById('platform').onload = _fireEvent('platform', 'SRX-5600', 'change');
-	setTimeout(function() {document.getElementById('platform').value = "VSRX";}, 0);	
-	setTimeout(function() {document.getElementById('software-image').value = "junos-vsrx";}, 0);
-
-
-    document.getElementById('synopsis').focus();
-    //document.getElementById('section_problem_summary').innerHTML = 'Problem Summary / template was created by Michael Zhou <a href="mailto:mzhou@juniper.net">mzhou</a>'; 
- 
-	// Generate alert if required
-	if (template_alert_msg.length > 0) {
-		alert(template_alert_msg);
+	if (!window.localStorage.getItem(public_name)) {
+		window.localStorage.setItem(public_name,public_template);
 	}
 }
+//first time running end
 
+check_public();
+
+//get template_list from local store
+//pr_template_list will save PR tempalte name ,it split each name with ,
+function get_template_list(local_name) {
+	var my_template_list=window.localStorage.getItem(local_name);
+	var my_template_list_arr=my_template_list.split(",");
+	return my_template_list_arr;
+}
 
 
 var isChrome = navigator.userAgent.indexOf("AppleWebKit") != -1;
@@ -179,26 +55,42 @@ var mytemp=/user:\ *(\w*)/im;
 var myresult=dbinfo.match(mytemp);
 var myname=myresult[1];
 
+//get appid path
+//fonts will use this path to load
+//var fontURL = chrome.extension.getURL("libs/fonts/OpenSans.woff");
+//var fontURL = chrome.extension.getURL("libs/font-awesome/fonts/fontawesome-webfont.woff");
+//alert(fontURL1);
+//alert(fontURL2);
+
+
 //get the pr/query template name list from localStorage
-var memu_pr_template_list//=local_to_obj(pr_template_list);
-//var memu_query_template_list=local_to_obj(query_template_list);;
+var memu_pr_template_list=get_template_list(pr_template_list);
+//var memu_query_template_list=local_to_obj(query_template_list);
 
+var ui_menu=MenuUI();
+var ui_div=DivUI();
 
-var mymenu=MenuUI();
+//add Float Div to gnats
+$("#footer").after(ui_div.join(""));
 
-	//add UI to gnats
-	$("#footer").after(mymenu.join(""));
+//add UI to gnats
+$("#footer").after(ui_menu.join(""));
 	
-	//disable old toolbar
-	$("#toolbar").hide();
-		
+//disable old toolbar
+$("#toolbar").hide();
+	
 	$(document).ready(function(){
 		//enable new menu
 		$().wtwu();
 		
 		//save PR template to local
 		$("#save_pr_template").on( "click", function(){
-			save_web_to_local();
+			save_pr_to_local();
+		})
+		
+		//save Query template to local
+		$("#save_query_template").on( "click", function(){
+			save_query_to_local();
 		});
 	
 		//write default template to form
@@ -211,20 +103,70 @@ var mymenu=MenuUI();
 		});
 	
 		$("#x47").on( "click", function(){
-			var form_value=get_web_form2();
+			var form_value=get_web_form();
 		});
+		
+		//hide gnats helper
+		$("#show_old").on( "click", function(){
+			$("#wtwu_content").hide();
+			$("#toolbar").show();
+			//add show button to gnats
+			$("#dbinfo").before(oldmenu.join(""));
+		});
+		
+		//show gnats helper
+		//$("#show_new").on( "click", function(){
+		//	$("#footer").after(ui_menu.join(""));
+		//	$("#toolbar").hide();
+		//});
+	
+		
+		//add action list for pr template 
+		//it will write localStorage PR template to create_form
+		if (memu_pr_template_list) {
+				$.each(memu_pr_template_list, function(n,my_value){
+						$("#"+my_value).on("click", function(){ write_web_form(my_value); });
+					});
+			
+		}
+		
 		
 	});
 
 
-//-----------------UI--------------------------
+//Float div for top/bottom function
+function DivUI() {
+	
+	var html = [];
+	html.push('<div id="wtwu_div" class="btn-group-vertical btn-group-sm">');
+	html.push('<button type="button" id="toTop" class="btn btn-default"><i class="fa fa-chevron-up"></i></button>');
+	html.push('<button type="button" id="toBottom" class="btn btn-default"><i class="fa fa-chevron-down"></i></button>');
+	html.push('<button type="button" id="switch_menu" class="btn btn-default"><i class="fa fa-exchange"></i></button>');
+	html.push('<button type="button" id="filter_content" class="btn btn-default"><i class="fa fa-filter"></i></button>');
+	html.push('</div>');
+	
+	//start to add javascript to gnats web
+	html.push('<script type="text/javascript">');
+	
+	//toTop jquery
+    html.push('$("#toTop").click( function () { $("html,body").animate({ "scrollTop" : 0 }, 500); });');
+    //toBottom jquery
+	//page height
+    html.push('var windowHeight = parseInt($("body").css("height" ));');
+    html.push('$( "#toBottom").click(function () { $( "html,body").animate({ "scrollTop" : windowHeight }, 500); });');
+	
+	 html.push('</script>');
+	//end to add javascript to gnats web
+	
+	return html;
+}
 
-
+//Menu define function
 function MenuUI() {
 	
 	var html = [];
-	html.push('<div id="wtwu-content">');
-	html.push('<ul class="venus-menu">');
+	html.push('<div id="wtwu_content">');
+	html.push('<ul class="wtwu_menu">');
     html.push('<li><a href="/web/default/"><i class="fa fa-home"></i>Home</a></li>');
 	html.push('<li><a href="/web/default/all-my-prs"><i class="fa fa-eye"></i>All My PRs</a>');
 		html.push('<ul>');
@@ -233,74 +175,69 @@ function MenuUI() {
 		html.push('<li><a href="/web/default/my-subms">My Submissions</a></li>');
 		html.push('</ul>');
     html.push('</li>');
-    html.push('<li><a href="#"><i class="fa fa-pencil"></i>PR Action</a>');
+    html.push('<li><a href="Javascript:void(0)"><i class="fa fa-pencil"></i>PR Action</a>');
 		html.push('<ul>');
-		html.push('<li><a href="/web/default/create">Create New</a></li>');
-		html.push('<li><a href="/web/default/edit/">Edit This PR</a></li>');
+		html.push('<li><a href="/web/default/create">Create PR</a></li>');
 		html.push('<li><a href="/web/default/query/">Query PR</a></li>');
-		html.push('<li><a href="#">QA Action</a>');
+		html.push('<li><a href="/web/default/edit/">Edit This PR</a></li>');
+		html.push('<li><a href="Javascript:void(0)">Add Audit-Trial</a></li>');
+		html.push('<li><a href="Javascript:void(0)">QA Action</a>');
 			html.push('<ul>');
-			html.push('<li><a href="#">Mark Blocker</a></li>');
-			html.push('<li><a href="#">Provide Info</a></li>');
-			html.push('<li><a href="#">Verify Failure</a></li>');
-			html.push('<li><a href="#">Close PR</a></li>');
+			html.push('<li><a href="Javascript:void(0)">Mark Blocker</a></li>');
+			html.push('<li><a href="Javascript:void(0)">Provide Info</a></li>');
+			html.push('<li><a href="Javascript:void(0)">Add Scope</a></li>');
+			html.push('<li><a href="Javascript:void(0)">Verify Failure</a></li>');
+			html.push('<li><a href="Javascript:void(0)">Close PR</a></li>');
 			html.push('</ul>');
 		html.push('</li>');
-		html.push('<li><a href="#">DEV Action</a>');
+		html.push('<li><a href="Javascript:void(0)">DEV Action</a>');
 			html.push('<ul>');
-			html.push('<li><a href="#">Need Info</a></li>');
-			html.push('<li><a href="#">Verify Private Image</a></li>');
-			html.push('<li><a href="#">Feedback PR</a></li>');
+			html.push('<li><a href="Javascript:void(0)">Need Info</a></li>');
+			html.push('<li><a href="Javascript:void(0)">Verify Private Image</a></li>');
+			html.push('<li><a href="Javascript:void(0)">Feedback PR</a></li>');
 			html.push('</ul>');
 		html.push('</li>');
-		html.push('<li><a href="#">Add Audit-Trial</a></li>');
-		html.push('<li><a href="#">Add Scope</a></li>');
 		html.push('</ul>');
 	html.push('</li>');
-	html.push('<li><a href="#"><i class="fa fa-random"></i>PR Template</a>');
+	html.push('<li><a href="Javascript:void(0)"><i class="fa fa-random"></i>PR Template</a>');
 		html.push('<ul>');
-		html.push('<li id="save_pr_template"><a href="#">Save Template</a></li>');
-		html.push('<li><a href="#">My Template</a>');
+		html.push('<li id="save_pr_template"><a href="Javascript:void(0)">Save PR Template</a></li>');
+		html.push('<li><a href="Javascript:void(0)">My Template</a>');
 			html.push('<ul>');
-			html.push('<li><a href="#">Branch</a></li>');
-			html.push('<li><a href="#">HighEnd</a></li>');
-			html.push('<li><a href="#">vSRX</a>');
-				html.push('<ul>');
-				html.push('<li><a href="#">X46</a>');
+			html.push('<li><a href="Javascript:void(0)">Branch</a></li>');
+			html.push('<li><a href="Javascript:void(0)">HighEnd</a></li>');
+			html.push('<li><a href="Javascript:void(0)">vSRX</a>');
 				
 				if (memu_pr_template_list) {
 					html.push('<ul>');
-						for (var i=0;i<memu_pr_template_list.length;i++) {
-							html.push('<li><a href="#">'+memu_pr_template_list[i]+'</a></li>');
-							}
+						$.each(memu_pr_template_list, function(n,my_value){
+						html.push('<li id="'+my_value+'"><a href="Javascript:void(0)">'+my_value+'</a></li>');
+					});
 					html.push('</ul>');
-				}
-				html.push('</li>');
-				html.push('<li><a href="#">X47</a></li>');
-				html.push('<li><a href="#">X48</a></li>');
-				html.push('<li><a href="#">X49</a></li>');
-				html.push('</ul>');
+				}	
+
 			html.push('</li>');
-			html.push('<li><a href="#">SBU</a></li>');
+			html.push('<li><a href="Javascript:void(0)">SBU</a></li>');
 		html.push('</ul>');
 		html.push('</li>');
-		html.push('<li><a href="#">Public Template</a>');
+		html.push('<li><a href="Javascript:void(0)">Public Template</a>');
 			html.push('<ul>');
-			html.push('<li   id="sbu"><a href="#">SBU Template</a></li>');
-			html.push('<li   id="pdt"><a href="#">PDT Template</a></li>');
-			html.push('<li><a href="#"  id="x47">X47 Template</a></li>');
-			html.push('<li><a href="#">vSRX Template</a></li>');
+			html.push('<li   id="sbu"><a href="Javascript:void(0)">SBU Template</a></li>');
+			html.push('<li   id="pdt"><a href="Javascript:void(0)">PDT Template</a></li>');
+			html.push('<li><a href="Javascript:void(0)"  id="x47">X47 Template</a></li>');
+			html.push('<li><a href="Javascript:void(0)">vSRX Template</a></li>');
 			html.push('</ul>');
 		html.push('</li>');
-		html.push('<li><a href="#">Manager Template</a></li>');
+		html.push('<li><a href="Javascript:void(0)">Manager Template</a></li>');
 		html.push('</ul>');
 	html.push('</li>');
-	html.push('<li><a href="#"><i class="fa fa-retweet"></i>Query Template</a>');
+	html.push('<li><a href="Javascript:void(0)"><i class="fa fa-retweet"></i>Query Template</a>');
 		html.push('<ul>');
-		html.push('<li><a href="#">SBU Template</a></li>');
-		html.push('<li><a href="#">PDT Template</a></li>');
-		html.push('<li><a href="#">X47 Template</a></li>');
-		html.push('<li><a href="#">vSRX Template</a></li>');
+		html.push('<li id="save_query_template"><a href="Javascript:void(0)">Save Template</a></li>');
+		html.push('<li><a href="Javascript:void(0)">SBU Template</a></li>');
+		html.push('<li><a href="Javascript:void(0)">PDT Template</a></li>');
+		html.push('<li><a href="Javascript:void(0)">X47 Template</a></li>');
+		html.push('<li><a href="Javascript:void(0)">vSRX Template</a></li>');
 		html.push('</ul>');
 	html.push('</li>');
 	html.push('<li><a href="/web/default/help"><i class="fa fa-leaf"></i>Help</a>');
@@ -310,7 +247,7 @@ function MenuUI() {
 		html.push('<li><a href="web/default/changes">Gnats Changes</a></li>');
 		html.push('<li><a href="mailto:wtwu@juniper.net?subject=Report a Gnats Helper Bug">Report Bug</a></li>');
 		html.push('<li><a href="mailto:wtwu@juniper.net?subject=Gnats Helper new requirement">New Requirement</a></li>');
-		html.push('<li><a href="#">About Gnats Helper</a></li>');
+		html.push('<li><a href="Javascript:void(0)">About Gnats Helper</a></li>');
 		html.push('</ul>');
 	html.push('</li>');
     html.push('<li class="search">');
@@ -351,72 +288,59 @@ function obj_to_local(obj_name,local_name) {
 		}
 }
 
-var form_id_list=["synopsis","reported-in","last-known-working-release","submitter-id","found-during","functional-area","class","pr-impact","product","platform","software-image","category","client-os","client-browser","problem-level","cve-id","cvss-base-score","cwe-id","keywords","configuration","notify-list","customer","related-prs","rli","npi-program","testcase-id","jtac-case-id","support-notes","supporting-device-release","supporting-device-product","supporting-device-platform","supporting-device-sw-image","description","corefile-location","corefile-stacktrace","environment","how-to-repeat","beta-programs","release-build-date","beta-customers","release-deploy-date","fix"];
- 
-//get create PR form value,Step1
-function get_web_form2() {
-		var form_value_list=$("#create_form").serializeArray();
-		var form_value={};
-		$.each(form_value_list, function(i, field){
-				form_value[field.name]=field.value;
-			});
-		replace_default_value(form_value);
-		return form_value;
-}
-
-//client-browser client-os platform product software-image
 
 //get create PR form value,Step1
 function get_web_form() {
 
 var gnats_web=new Object();
-gnats_web["synopsis"]=$("#synopsis").val();
-gnats_web["reported-in"]=$("#reported-in").val();
-gnats_web["last-known-working-release"]=$("#last-known-working-release").val();
-gnats_web["submitter-id"]=$("#submitter-id").val();
-gnats_web["found-during"]=$("#found-during").val();
-gnats_web["functional-area"]=$("#functional-area").val();
-gnats_web["class"]=$("#class").val();
-gnats_web["pr-impact"]=$("#pr-impact").val();
-gnats_web["product"]=$("#product").val();
-gnats_web["platform"]=$("#platform").val();
-gnats_web["software-image"]=$("#software-image").val();
-gnats_web["category"]=$("#category").val();
-gnats_web["client-os"]=$("#client-os").val();
-gnats_web["client-browser"]=$("#client-browser").val();
-gnats_web["problem-level"]=$("#problem-level").val();
-gnats_web["cve-id"]=$("#cve-id").val();
-gnats_web["cvss-base-score"]=$("#cvss-base-score").val();
-gnats_web["cwe-id"]=$("#cwe-id").val();
-gnats_web["keywords"]=$("#keywords").val();
-gnats_web["configuration"]=$("#configuration").val();
-//gnats_web["planned-release{1}"]=$("#planned-release{1}").val();
-//gnats_web["customer-escalation{1}"]=$("#customer-escalation{1}").val();
-//gnats_web["responsible{1}"]=$("#responsible{1}").val();
-//gnats_web["systest-owner{1}"]=$("#systest-owner{1}").val();
-gnats_web["notify-list"]=$("#notify-list").val();
-gnats_web["customer"]=$("#customer").val();
-gnats_web["related-prs"]=$("#related-prs").val();
-gnats_web["rli"]=$("#rli").val();
-gnats_web["npi-program"]=$("#npi-program").val();
-gnats_web["testcase-id"]=$("#testcase-id").val();
-gnats_web["jtac-case-id"]=$("#jtac-case-id").val();
-gnats_web["support-notes"]=$("#support-notes").val();
-gnats_web["supporting-device-release"]=$("#supporting-device-release").val();
-gnats_web["supporting-device-product"]=$("#supporting-device-product").val();
-gnats_web["supporting-device-platform"]=$("#supporting-device-platform").val();
-gnats_web["supporting-device-sw-image"]=$("#supporting-device-sw-image").val();
-gnats_web["description"]=$("#description").val();
-gnats_web["corefile-location"]=$("#corefile-location").val();
-gnats_web["corefile-stacktrace"]=$("#corefile-stacktrace").val();
-gnats_web["environment"]=$("#environment").val();
-gnats_web["how-to-repeat"]=$("#how-to-repeat").val();
-gnats_web["beta-programs"]=$("#beta-programs").val();
-gnats_web["release-build-date"]=$("#release-build-date").val();
-gnats_web["beta-customers"]=$("#beta-customers").val();
-gnats_web["release-deploy-date"]=$("#release-deploy-date").val();
-gnats_web["fix"]=$("#fix").val();
-return gnats_web;
+gnats_web['synopsis']=$('#synopsis').val();
+gnats_web['reported-in']=$('#reported-in').val();
+gnats_web['last-known-working-release']=$('#last-known-working-release').val();
+gnats_web['submitter-id']=$('#submitter-id').val();
+gnats_web['found-during']=$('#found-during').val();
+gnats_web['functional-area']=$('#functional-area').val();
+gnats_web['class']=$('#class').val();
+gnats_web['pr-impact']=$('#pr-impact').val();
+gnats_web['product']=$('#product').val();
+gnats_web['platform']=$('#platform').val();
+gnats_web['software-image']=$('#software-image').val();
+gnats_web['category']=$('#category').val();
+gnats_web['client-os']=$('#client-os').val();
+gnats_web['client-browser']=$('#client-browser').val();
+gnats_web['problem-level']=$('#problem-level').val();
+gnats_web['cve-id']=$('#cve-id').val();
+gnats_web['cvss-base-score']=$('#cvss-base-score').val();
+gnats_web['cwe-id']=$('#cwe-id').val();
+gnats_web['keywords']=$('#keywords').val();
+gnats_web['configuration']=$('#configuration').val();
+gnats_web['planned-release{1}']=$('#planned-release{1}').val();
+gnats_web['customer-escalation{1}']=$('#customer-escalation{1}').val();
+gnats_web['responsible{1}']=$('#responsible{1}').val();
+gnats_web['systest-owner{1}']=$('#systest-owner{1}').val();
+gnats_web['notify-list']=$('#notify-list').val();
+gnats_web['customer']=$('#customer').val();
+gnats_web['related-prs']=$('#related-prs').val();
+gnats_web['rli']=$('#rli').val();
+gnats_web['npi-program']=$('#npi-program').val();
+gnats_web['testcase-id']=$('#testcase-id').val();
+gnats_web['jtac-case-id']=$('#jtac-case-id').val();
+gnats_web['support-notes']=$('#support-notes').val();
+gnats_web['supporting-device-release']=$('#supporting-device-release').val();
+gnats_web['supporting-device-product']=$('#supporting-device-product').val();
+gnats_web['supporting-device-platform']=$('#supporting-device-platform').val();
+gnats_web['supporting-device-sw-image']=$('#supporting-device-sw-image').val();
+gnats_web['description']=$('#description').val();
+gnats_web['corefile-location']=$('#corefile-location').val();
+gnats_web['corefile-stacktrace']=$('#corefile-stacktrace').val();
+gnats_web['environment']=$('#environment').val();
+gnats_web['how-to-repeat']=$('#how-to-repeat').val();
+gnats_web['beta-programs']=$('#beta-programs').val();
+gnats_web['release-build-date']=$('#release-build-date').val();
+gnats_web['beta-customers']=$('#beta-customers').val();
+gnats_web['release-deploy-date']=$('#release-deploy-date').val();
+gnats_web['fix']=$('#fix').val();
+
+return replace_default_value(gnats_web)
 
 }
 
@@ -425,14 +349,96 @@ function replace_default_value(obj_name) {
 	if (obj_name) {
 		for (var p in obj_name) { 
 		//delete null value and default value in form data
-			if ((obj_name[p]) =="" || (obj_name[p]) =="type for auto-completion" || (obj_name[p]) =="unknown" || (obj_name[p]) =="enter the number(s) of the testcase(s) generated for gap closure" ) {
+			if ((obj_name[p]) =="" || (obj_name[p]) =="type for auto-completion" || (obj_name[p]) =="unknown" || (obj_name[p]) =="enter the number(s) of the testcase(s) generated for gap closure" || (obj_name[p]) =="11\r\n11" || (obj_name[p]) ==" ") {
 				delete obj_name[p];
 			}
 		}
-	console.log(obj_name);
+		//delete from/how-to-repeat/description/environment,these value will always use public template
+		// from: and how-to-repate need use ' to delete it
+		delete obj_name['from:'];
+		delete obj_name["description"];
+		delete obj_name["environment"];
+		delete obj_name['how-to-repeat'];
 	return obj_name;
 	}	
 }
+
+//var form_id_list=["synopsis","reported-in","last-known-working-release","submitter-id","found-during","functional-area","class","pr-impact","product","platform","software-image","category","client-os","client-browser","problem-level","cve-id","cvss-base-score","cwe-id","keywords","configuration","notify-list","customer","related-prs","rli","npi-program","testcase-id","jtac-case-id","support-notes","supporting-device-release","supporting-device-product","supporting-device-platform","supporting-device-sw-image","description","corefile-location","corefile-stacktrace","environment","how-to-repeat","beta-programs","release-build-date","beta-customers","release-deploy-date","fix"];
+ 
+//get create PR form value,Step1
+function get_web_form2() {
+		var form_value_list=$("#create_form").serializeArray();
+		var form_value={};
+		$.each(form_value_list, function(i, field){
+				form_value[field.name]=field.value;
+			});
+		return replace_default_value2(form_value);
+}
+
+//replate null and default value from web form before save to local
+function replace_default_value2(obj_name) {
+	if (obj_name) {
+		for (var p in obj_name) { 
+		//delete null value and default value in form data
+			if ((obj_name[p]) =="" || (obj_name[p]) =="type for auto-completion" || (obj_name[p]) =="unknown" || (obj_name[p]) =="enter the number(s) of the testcase(s) generated for gap closure" || (obj_name[p]) =="11\r\n11" || (obj_name[p]) ==" ") {
+				delete obj_name[p];
+			}
+		}
+		//delete from/how-to-repeat/description/environment,these value will always use public template
+		// from: and how-to-repate need use ' to delete it
+		delete obj_name['from:'];
+		delete obj_name["description"];
+		delete obj_name["environment"];
+		delete obj_name['how-to-repeat'];
+	return obj_name;
+	}	
+}
+
+//write PR form value from local template
+function write_web_form(local_name) {
+		//local temlate value 
+		//form_value_list is not null 
+		var form_value_list=local_to_obj(local_name);
+		if (form_value_list) {
+			//check create_form and problem-level form value is not null
+			var create_form=$("#problem-level").val();
+			if (create_form) {
+				//need to do fireEvent for these values:
+				//  #submitter-id  #product   #supporting-device-product
+				//	$("#submitter-id").val("systest").trigger("change");
+				//	$("#product").val("vsrx-series").trigger("change");
+				//	$("#supporting-device-product").val("vsrx-series").trigger("change");
+				if (form_value_list['submitter-id'])  { 
+					$('#submitter-id').val(form_value_list['submitter-id']).trigger("change");
+				}
+				if (form_value_list['product'])  { 
+					$('#product').val(form_value_list['product']).trigger("change");
+				}
+				if (form_value_list['supporting-device-product'])  { 
+					$('#supporting-device-product').val(form_value_list['supporting-device-product']).trigger("change");
+				}
+				//write other value to web form
+				$.each(form_value_list, function(i, field){
+						//skip fireEvent id
+						if ((i!='submitter-id') || (i!='product') || (i!='supporting-device-product') ) {
+							$("#"+i).val(field);
+						}
+					});
+			}
+			else {
+				alert("Sorry,You are not in PR Create page!")
+			}
+			
+		}
+		//public template value
+		var public_value_list=local_to_obj(public_name);
+		if (public_value_list) {
+					$.each(public_value_list, function(i, field){
+						$("#"+i).val(field);
+				});
+		}
+}
+
 
 //display a form to input the template name,Step2
 function get_template_name() {
@@ -440,22 +446,22 @@ function get_template_name() {
 	return template_name;
 }
 
-//save template name in localStorage array
-//return index value as a primary key
+//save template name to localStorage array
 function template_name_to_local(template_name,local_name) {
 	//check local_template_list
 	//if pr_template_list is null
 	if (template_name && local_name) {
-		var local_pr_template_list = local_to_obj(local_name);
+		var local_pr_template_list = window.localStorage.getItem(local_name);
+		//if no localStorage data,then add default
 		if (!local_pr_template_list) {
-			var my_pr_template_list=new Object();
-			my_pr_template_list[0]=template_name;
+			check_public();
 		}
 		else {
-			var my_pr_template_list=local_pr_template_list;
-			my_pr_template_list.push(template_name);
+			//add a , to split the string as a array
+			var my_pr_template_list=local_pr_template_list+","+template_name;
+			//add a ,to split the string as a array
+			window.localStorage.setItem(local_name,my_pr_template_list);
 		}
-		obj_to_local(my_pr_template_list,pr_template_list);
 }
 }
 
@@ -485,14 +491,81 @@ function check_localStorage() {
 	}
 }
 
-//save form data to localStorage
-function save_web_to_local() {
+//save PR form data to localStorage
+function save_pr_to_local() {
 		//var my_template_obj_temp=get_web_form();
-			var my_template_obj=get_web_form2();
+		//check create_form and problem-level form value is not null
+		var create_form=$("#problem-level").val();
+		if (create_form) {
+			var my_template_obj=get_web_form();
 			var my_template_name=get_template_name();
 			if (my_template_obj && my_template_name) {
 				template_name_to_local(my_template_name,pr_template_list);
 				template_data_to_local(my_template_obj,my_template_name)
 			}
+		}
+		else  {
+			alert("Sorry,You are not in PR Create page!")
+		}
+}
+
+
+
+/*
+keyword:Gnats query-pr expression
+
+$("div.code").text()
+$("div.code").html()
+format1:
+<a name="expr"></a><b>Gnats query-pr expression</b>:
+<div class="code">(responsible == &quot;wtwu&quot; &amp; state != &quot;suspended&quot; &amp; state != &quot;closed&quot;)</div>
+
+$("#expr textarea").text()
+$("#expr textarea").val()
+format2:
+  <div id="adv" class="tab-contents">
+    Using Gnats query-pr expression:
+    <div id="expr">
+      <textarea name="expr" rows="5" cols="80">((From:==&quot;wtwu&quot; | From:==&quot;wtwu@juniper.net&quot;) &amp;                  state != &quot;suspended&quot; &amp; state != &quot;closed&quot;)</textarea>
+    </div>
+
+	
+$.post('https://gnats.juniper.net/web/default/do-query',
+		{adv:1,expr:'(responsible == "wtwu" & state != "suspended" & state != "closed")'},
+		function(data,status){
+			//console.log("数据：" + data + "\n状态：" + status);
+			if (status=="success") {
+				window.location = 'https://gnats.juniper.net/web/default/do-query';
+			}
+		})	
+*/
+
+
+//save PR form data to localStorage
+function save_query_to_local() {
+		//check PR Query Expression in current page
+		//it have two format 
+		var query_result=$("div.code").text();
+		var query_form=$("#expr textarea").text();
+		var query_expr;
+		if (query_result) {
+			query_expr=query_result;
+		}
+		else if (query_form)  {
+			query_expr=query_form;
+			}
+		else  {
+			alert("Sorry,This page don't have any PR Query Expression!")
+		}
+		//if query_expr is not null
+		if (query_expr)   {
+			//var my_template_obj=get_web_form();
+			//var my_template_name=get_template_name();
+			//if (my_template_obj && my_template_name) {
+			//	template_name_to_local(my_template_name,pr_template_list);
+			//	template_data_to_local(my_template_obj,my_template_name)
+			alert("Query Expression is:\n"+query_expr)
+			//}
+		}
 }
 

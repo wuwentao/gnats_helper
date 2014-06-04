@@ -2,7 +2,7 @@
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 300;
-  src: local('Open Sans Light'), local('OpenSans-Light'), url(775413/attachments/OpenSans.woff) format('woff');
+  src: local('Open Sans Light'), local('OpenSans-Light'), url(https://gnats.juniper.net/web/default/775413/attachments/OpenSans.woff) format('woff');
 }
 body { padding-top: 56px; }
 #popup {

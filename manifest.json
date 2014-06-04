@@ -37,8 +37,9 @@
    },
    "manifest_version": 2,
    "minimum_chrome_version": "18.0",
-   "name": "Juniper Gnats Helper for Chrome  v0.1",
+   "name": "Juniper Gnats Helper Version 0.1",
    "permissions": [ "https://gnats.juniper.net/*", "https://10.208.180.10/*", "https://*.juniper.net/*", "notifications", "webRequest", "webRequestBlocking" ],
-   "update_url": "http://10.208.180.10/gnatshelper/crx",
-   "version": "0.0.1"
+   "update_url": "http://10.208.180.10/root/wtwu/gnats/update.xml",
+   "web_accessible_resources": ["libs/fonts/*","libs/font-awesome/fonts/*"],
+    "version": "0.1"
 }
