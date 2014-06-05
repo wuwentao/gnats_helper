@@ -13,12 +13,12 @@ var  pr_template_list="__PR_TEMPLATE_LIST__";
 var  query_template_list="__QUERY_TEMPLATE_LIST__";
 var  gnats_helper_ver="0.1" 
 
-var  default_name = "Default template";
+var  default_name = "Default_template";
 var  default_template = '{"synopsis":"Department:Project:Feature-Tested:Subcategory(optional):<one-line summary>"}';
-var  public_name="__PUBLIC_PR_TEMPLATE__"
-var  public_template =  '{"description":"##################################################################\n1.    SYMPTOMS AND FREQUENCY OF OCCURRENCE\n##################################################################\nREPLACE WITH SYMPTOMS AND FREQUENCY OF OCCURRENCE\n\n\n\n##################################################################\n2.    EXPECTED-BEHAVIOR\n##################################################################\nREPLACE WITH EXPECTED-BEHAVIOR\n\n\n\n##################################################################\n3.    ORIGINATOR-ANALYSIS\n      E.G. MAIN-FINDINGS, EXCERPTS OF RELEVANT COUNTERS/LOGS/SHOW COMMANDS\n##################################################################\nREPLACE WITH ORIGINATOR-ANALYSIS \n\n\n\n#################################################################################\n4.    MORE-INFO\n      E.G. LOCATION OF COMPLETE CONFIGS, SYSLOGS, FDA OUTPUT, DETAILED COUNTERS\n#################################################################################\nREPLACE WITH MORE-INFO\n\n\n##################################################################\n5.    METADATA (DO NOT MODIFY METADATA VALUES!!!)\n##################################################################\nMETADATA_START\nTEMPLATE_TYPE:SBU\nTEMPLATE_VERSION:2012071302\nMETADATA_END",\
-						  "environment":"##################################################################\n1.    TOPOLOGY\n##################################################################\nREPLACE WITH TOPOLOGY\n\n##################################################################\n2.    TRAFFIC-PROFILE\n##################################################################\n------------------------------------------------------------------\n- TRAFFIC PROTOCOLS SENT\n------------------------------------------------------------------\nREPLACE WITH TRAFFIC PROTOCOLS SENT\n\n------------------------------------------------------------------\n- EXTERNAL TRAFFIC GENERATOR\'S PROFILE\n------------------------------------------------------------------\nN/A or REPLACE HERE",\
-						  "how-to-repeat":"##################################################################\nSTEPS TO REPRODUCE\n##################################################################\nREPLACE HERE\n\nOR\n\n##################################################################\nTEST-STEPS (if reproduce steps not known)\n##################################################################\nREPLACE HERE"}';
+var  public_name="__PUBLIC_TEMPLATE__"
+var  public_template =  '{"description":"##################################################################\\n1.    SYMPTOMS AND FREQUENCY OF OCCURRENCE\\n##################################################################\\nREPLACE WITH SYMPTOMS AND FREQUENCY OF OCCURRENCE\\n\\n\\n\\n##################################################################\\n2.    EXPECTED-BEHAVIOR\\n##################################################################\\nREPLACE WITH EXPECTED-BEHAVIOR\\n\\n\\n\\n##################################################################\\n3.    ORIGINATOR-ANALYSIS\\n      E.G. MAIN-FINDINGS, EXCERPTS OF RELEVANT COUNTERS/LOGS/SHOW COMMANDS\\n##################################################################\\nREPLACE WITH ORIGINATOR-ANALYSIS \\n\\n\\n\\n#################################################################################\\n4.    MORE-INFO\\n      E.G. LOCATION OF COMPLETE CONFIGS, SYSLOGS, FDA OUTPUT, DETAILED COUNTERS\\n#################################################################################\\nREPLACE WITH MORE-INFO\\n\\n\\n##################################################################\\n5.    METADATA (DO NOT MODIFY METADATA VALUES!!!)\\n##################################################################\\nMETADATA_START\\nTEMPLATE_TYPE:SBU\\nTEMPLATE_VERSION:2012071302\\nMETADATA_END",\
+						  "environment":"##################################################################\\n1.    TOPOLOGY\\n##################################################################\\nREPLACE WITH TOPOLOGY\\n\\n##################################################################\\n2.    TRAFFIC-PROFILE\\n##################################################################\\n------------------------------------------------------------------\\n- TRAFFIC PROTOCOLS SENT\\n------------------------------------------------------------------\\nREPLACE WITH TRAFFIC PROTOCOLS SENT\\n\\n------------------------------------------------------------------\\n- EXTERNAL TRAFFIC GENERATOR\'S PROFILE\\n------------------------------------------------------------------\\nN/A or REPLACE HERE",\
+						  "how-to-repeat":"##################################################################\\nSTEPS TO REPRODUCE\\n##################################################################\\nREPLACE HERE\\n\\nOR\\n\\n##################################################################\\nTEST-STEPS (if reproduce steps not known)\\n##################################################################\\nREPLACE HERE"}';
 
 //check localStore
 function check_public() {
@@ -32,7 +32,6 @@ function check_public() {
 		window.localStorage.setItem(public_name,public_template);
 	}
 }
-//first time running end
 
 check_public();
 
@@ -44,11 +43,9 @@ function get_template_list(local_name) {
 	return my_template_list_arr;
 }
 
-
-var isChrome = navigator.userAgent.indexOf("AppleWebKit") != -1;
-
-//alert(isChrome);
-//alert(isFirefox);
+//get the pr/query template name list from localStorage
+var memu_pr_template_list=get_template_list(pr_template_list);
+//var memu_query_template_list=get_template_list(query_template_list);
 
 var dbinfo=$("#dbinfo").html();
 var mytemp=/user:\ *(\w*)/im;
@@ -63,10 +60,6 @@ var myname=myresult[1];
 //alert(fontURL2);
 
 
-//get the pr/query template name list from localStorage
-var memu_pr_template_list=get_template_list(pr_template_list);
-//var memu_query_template_list=local_to_obj(query_template_list);
-
 var ui_menu=MenuUI();
 var ui_div=DivUI();
 
@@ -75,13 +68,12 @@ $("#footer").after(ui_div.join(""));
 
 //add UI to gnats
 $("#footer").after(ui_menu.join(""));
+
 	
 //disable old toolbar
 $("#toolbar").hide();
 	
 	$(document).ready(function(){
-		//enable new menu
-		$().wtwu();
 		
 		//save PR template to local
 		$("#save_pr_template").on( "click", function(){
@@ -201,13 +193,8 @@ function MenuUI() {
 	html.push('</li>');
 	html.push('<li><a href="Javascript:void(0)"><i class="fa fa-random"></i>PR Template</a>');
 		html.push('<ul>');
-		html.push('<li id="save_pr_template"><a href="Javascript:void(0)">Save PR Template</a></li>');
-		html.push('<li><a href="Javascript:void(0)">My Template</a>');
-			html.push('<ul>');
-			html.push('<li><a href="Javascript:void(0)">Branch</a></li>');
-			html.push('<li><a href="Javascript:void(0)">HighEnd</a></li>');
-			html.push('<li><a href="Javascript:void(0)">vSRX</a>');
-				
+		html.push('<li id="save_pr_template"><a href="Javascript:void(0)">Save as Template</a></li>');
+		html.push('<li><a href="Javascript:void(0)">My Template</a>');			
 				if (memu_pr_template_list) {
 					html.push('<ul>');
 						$.each(memu_pr_template_list, function(n,my_value){
@@ -215,15 +202,11 @@ function MenuUI() {
 					});
 					html.push('</ul>');
 				}	
-
-			html.push('</li>');
-			html.push('<li><a href="Javascript:void(0)">SBU</a></li>');
-		html.push('</ul>');
 		html.push('</li>');
 		html.push('<li><a href="Javascript:void(0)">Public Template</a>');
 			html.push('<ul>');
-			html.push('<li   id="sbu"><a href="Javascript:void(0)">SBU Template</a></li>');
-			html.push('<li   id="pdt"><a href="Javascript:void(0)">PDT Template</a></li>');
+			html.push('<li id="sbu"><a href="Javascript:void(0)">SBU Template</a></li>');
+			html.push('<li id="pdt"><a href="Javascript:void(0)">PDT Template</a></li>');
 			html.push('<li><a href="Javascript:void(0)"  id="x47">X47 Template</a></li>');
 			html.push('<li><a href="Javascript:void(0)">vSRX Template</a></li>');
 			html.push('</ul>');
@@ -280,11 +263,17 @@ function local_to_obj(local_name) {
 			var obj_name = JSON.parse(localStorage.getItem(local_name));
 			return obj_name;
 		}
+		else {
+			alert("Sorry,not found local_name");
+		}
 }
 //javascript object to localStorage
 function obj_to_local(obj_name,local_name) {
 		if ( obj_name && local_name)  {
 			localStorage.setItem(local_name,JSON.stringify(obj_name));
+		}
+		else {
+			alert("Sorry,not found obj_name or local_name");
 		}
 }
 
@@ -313,10 +302,10 @@ gnats_web['cvss-base-score']=$('#cvss-base-score').val();
 gnats_web['cwe-id']=$('#cwe-id').val();
 gnats_web['keywords']=$('#keywords').val();
 gnats_web['configuration']=$('#configuration').val();
-gnats_web['planned-release{1}']=$('#planned-release{1}').val();
-gnats_web['customer-escalation{1}']=$('#customer-escalation{1}').val();
-gnats_web['responsible{1}']=$('#responsible{1}').val();
-gnats_web['systest-owner{1}']=$('#systest-owner{1}').val();
+gnats_web['planned-release{1}']=document.getElementById('planned-release{1}').value;
+gnats_web['customer-escalation{1}']=document.getElementById('customer-escalation{1}').value;
+gnats_web['responsible{1}']=document.getElementById('responsible{1}').value;
+gnats_web['systest-owner{1}']=document.getElementById('systest-owner{1}').value;
 gnats_web['notify-list']=$('#notify-list').val();
 gnats_web['customer']=$('#customer').val();
 gnats_web['related-prs']=$('#related-prs').val();
@@ -329,11 +318,11 @@ gnats_web['supporting-device-release']=$('#supporting-device-release').val();
 gnats_web['supporting-device-product']=$('#supporting-device-product').val();
 gnats_web['supporting-device-platform']=$('#supporting-device-platform').val();
 gnats_web['supporting-device-sw-image']=$('#supporting-device-sw-image').val();
-gnats_web['description']=$('#description').val();
+//gnats_web['description']=$('#description').val();
 gnats_web['corefile-location']=$('#corefile-location').val();
 gnats_web['corefile-stacktrace']=$('#corefile-stacktrace').val();
-gnats_web['environment']=$('#environment').val();
-gnats_web['how-to-repeat']=$('#how-to-repeat').val();
+//gnats_web['environment']=$('#environment').val();
+//gnats_web['how-to-repeat']=$('#how-to-repeat').val();
 gnats_web['beta-programs']=$('#beta-programs').val();
 gnats_web['release-build-date']=$('#release-build-date').val();
 gnats_web['beta-customers']=$('#beta-customers').val();
@@ -341,6 +330,8 @@ gnats_web['release-deploy-date']=$('#release-deploy-date').val();
 gnats_web['fix']=$('#fix').val();
 
 return replace_default_value(gnats_web)
+
+//product,platform,software-image,client-os,client-browser is array value
 
 }
 
@@ -367,76 +358,12 @@ function replace_default_value(obj_name) {
  
 //get create PR form value,Step1
 function get_web_form2() {
-		var form_value_list=$("#create_form").serializeArray();
+		var form_list=$("#create_form").serializeArray();
 		var form_value={};
-		$.each(form_value_list, function(i, field){
+		$.each(form_list, function(i, field){
 				form_value[field.name]=field.value;
 			});
 		return replace_default_value2(form_value);
-}
-
-//replate null and default value from web form before save to local
-function replace_default_value2(obj_name) {
-	if (obj_name) {
-		for (var p in obj_name) { 
-		//delete null value and default value in form data
-			if ((obj_name[p]) =="" || (obj_name[p]) =="type for auto-completion" || (obj_name[p]) =="unknown" || (obj_name[p]) =="enter the number(s) of the testcase(s) generated for gap closure" || (obj_name[p]) =="11\r\n11" || (obj_name[p]) ==" ") {
-				delete obj_name[p];
-			}
-		}
-		//delete from/how-to-repeat/description/environment,these value will always use public template
-		// from: and how-to-repate need use ' to delete it
-		delete obj_name['from:'];
-		delete obj_name["description"];
-		delete obj_name["environment"];
-		delete obj_name['how-to-repeat'];
-	return obj_name;
-	}	
-}
-
-//write PR form value from local template
-function write_web_form(local_name) {
-		//local temlate value 
-		//form_value_list is not null 
-		var form_value_list=local_to_obj(local_name);
-		if (form_value_list) {
-			//check create_form and problem-level form value is not null
-			var create_form=$("#problem-level").val();
-			if (create_form) {
-				//need to do fireEvent for these values:
-				//  #submitter-id  #product   #supporting-device-product
-				//	$("#submitter-id").val("systest").trigger("change");
-				//	$("#product").val("vsrx-series").trigger("change");
-				//	$("#supporting-device-product").val("vsrx-series").trigger("change");
-				if (form_value_list['submitter-id'])  { 
-					$('#submitter-id').val(form_value_list['submitter-id']).trigger("change");
-				}
-				if (form_value_list['product'])  { 
-					$('#product').val(form_value_list['product']).trigger("change");
-				}
-				if (form_value_list['supporting-device-product'])  { 
-					$('#supporting-device-product').val(form_value_list['supporting-device-product']).trigger("change");
-				}
-				//write other value to web form
-				$.each(form_value_list, function(i, field){
-						//skip fireEvent id
-						if ((i!='submitter-id') || (i!='product') || (i!='supporting-device-product') ) {
-							$("#"+i).val(field);
-						}
-					});
-			}
-			else {
-				alert("Sorry,You are not in PR Create page!")
-			}
-			
-		}
-		//public template value
-		var public_value_list=local_to_obj(public_name);
-		if (public_value_list) {
-					$.each(public_value_list, function(i, field){
-						$("#"+i).val(field);
-				});
-		}
 }
 
 
@@ -506,6 +433,188 @@ function save_pr_to_local() {
 		}
 		else  {
 			alert("Sorry,You are not in PR Create page!")
+		}
+}
+
+function _fireEvent(obj_id, obj_value, event) {
+	var el = document.getElementById(obj_id);
+	el.onchange = function () {
+		document.getElementById(obj_id).value = obj_value;
+		}
+	var evt=document.createEvent("HTMLEvents");//FF
+	evt.initEvent(event, true, true); 
+	document.getElementById(obj_id).dispatchEvent(evt); 
+}
+
+//write PR form value from local template
+function write_web_form(local_name) {
+		//local temlate value 
+		//form_value_list is not null
+		var form_value_list=local_to_obj(local_name);
+		console.log(form_value_list);
+		if (form_value_list) {
+			//check create_form and problem-level form value is not null
+			var create_form=$("#problem-level").val();
+			if (create_form) {
+				//write these values to web form
+				//product,platform,software-image,client-os,client-browser are array value
+				
+				//part1 need to do fireEvent for these values:
+				//  submitter-id  product   supporting-device-product
+				//	$("#submitter-id").val("systest").trigger("change");
+				//	after set this value to the form,will delete it from form_value_list
+				if (form_value_list['submitter-id'])  { 
+					$('#submitter-id').val(form_value_list['submitter-id']).trigger("change");
+					//document.getElementById('submitter-id').onload = _fireEvent('submitter-id', form_value_list['submitter-id'],'change');
+					console.log(form_value_list['submitter-id']);
+					delete form_value_list['submitter-id'];
+				}
+				if (form_value_list['product'])  { 
+					$('#product').val(form_value_list['product']).trigger("change");
+					//document.getElementById('product').onload = _fireEvent('product', form_value_list['product'],'change');
+					console.log(form_value_list['product']);
+					delete form_value_list['product'];
+				}
+				if (form_value_list['supporting-device-product'])  { 
+					$('#supporting-device-product').val(form_value_list['supporting-device-product']).trigger("change");
+					//document.getElementById('supporting-device-product').onload = _fireEvent('supporting-device-product', form_value_list['supporting-device-product'],'change');
+					delete form_value_list['supporting-device-product'];
+				}
+							
+				//part2 have special string  {} ,jQuery not support it
+				//planned-release{1}  , customer-escalation{1} ,  responsible{1} , systest-owner{1} 
+				if (form_value_list['planned-release{1}'])  { 
+					document.getElementById('planned-release{1}').value=form_value_list['planned-release{1}'];
+					delete form_value_list['planned-release{1}'];
+				}
+				if (form_value_list['customer-escalation{1}'])  { 
+					document.getElementById('customer-escalation{1}').value=form_value_list['customer-escalation{1}'];
+					delete form_value_list['customer-escalation{1}'];
+				}
+				if (form_value_list['responsible{1}'])  { 
+					document.getElementById('responsible{1}').value=form_value_list['responsible{1}'];
+					delete form_value_list['responsible{1}'];
+				}
+				if (form_value_list['systest-owner{1}'])  { 
+					document.getElementById('systest-owner{1}').value=form_value_list['systest-owner{1}'];
+					delete form_value_list['systest-owner{1}'];
+				}
+								
+				//part4
+				//write the rest value to the form
+				$.each(form_value_list, function(i, field){
+							$("#"+i).val(field);
+					});
+				document.getElementById('synopsis').focus();
+				/*
+				$('#synopsis').val(form_value_list['supporting-device-product']);
+				$('#reported-in').val(form_value_list['reported-in']);
+				$('#last-known-working-release').val(form_value_list['last-known-working-release']);
+				//$('#submitter-id').val(form_value_list['submitter-id']);
+				$('#found-during').val(form_value_list['found-during']);
+				$('#functional-area').val(form_value_list['functional-area']);
+				$('#class').val(form_value_list['class']);
+				$('#pr-impact').val(form_value_list['pr-impact']);
+				//$('#product').val(form_value_list['product']);
+				$('#platform').val(form_value_list['platform']);
+				$('#software-image').val(form_value_list['software-image']);
+				$('#category').val(form_value_list['category']);
+				$('#client-os').val(form_value_list['client-os']);
+				$('#client-browser').val(form_value_list['client-browser']);
+				$('#problem-level').val(form_value_list['problem-level']);
+				$('#cve-id').val(form_value_list['cve-id']);
+				$('#cvss-base-score').val(form_value_list['cvss-base-score']);
+				$('#cwe-id').val(form_value_list['cwe-id']);
+				$('#keywords').val(form_value_list['keywords']);
+				$('#configuration').val(form_value_list['configuration']);
+				//document.getElementById('planned-release{1}').value;
+				//document.getElementById('customer-escalation{1}').value;
+				//document.getElementById('responsible{1}').value;
+				//document.getElementById('systest-owner{1}').value;
+				$('#notify-list').val(form_value_list['notify-list']);
+				$('#customer').val(form_value_list['customer']);
+				$('#related-prs').val(form_value_list['related-prs']);
+				$('#rli').val(form_value_list['rli']);
+				$('#npi-program').val(form_value_list['npi-program']);
+				$('#testcase-id').val(form_value_list['testcase-id']);
+				$('#jtac-case-id').val(form_value_list['jtac-case-id']);
+				$('#support-notes').val(form_value_list['support-notes']);
+				$('#supporting-device-release').val(form_value_list['supporting-device-release']);
+				//$('#supporting-device-product').val(form_value_list['supporting-device-product']);
+				$('#supporting-device-platform').val(form_value_list['supporting-device-platform']);
+				$('#supporting-device-sw-image').val(form_value_list['supporting-device-sw-image']);
+				//$('#description').val(form_value_list['description']);
+				$('#corefile-location').val(form_value_list['corefile-location']);
+				$('#corefile-stacktrace').val(form_value_list['corefile-stacktrace']);
+				//$('#environment').val(form_value_list['environment']);
+				//$('#how-to-repeat').val(form_value_list['how-to-repeat']);
+				$('#beta-programs').val(form_value_list['beta-programs']);
+				$('#release-build-date').val(form_value_list['release-build-date']);
+				$('#beta-customers').val(form_value_list['beta-customers']);
+				$('#release-deploy-date').val(form_value_list['release-deploy-date']);
+				$('#fix').val(form_value_list['fix']);
+				*/
+				
+			}
+			else {
+				alert("Sorry,You are not in PR Create page!");
+				return;
+			}
+			
+		}
+		//public template value
+		//description,environment,how-to-repeat
+		var public_value_list=local_to_obj(public_name);
+		if (public_value_list) {
+					$.each(public_value_list, function(i, field){
+						$("#"+i).val(field);
+				});
+		}
+}
+
+//write PR form value from local template
+function write_web_form2(local_name) {
+		//local temlate value 
+		//form_value_list is not null 
+		var form_value_list=local_to_obj(local_name);
+		if (form_value_list) {
+			//check create_form and problem-level form value is not null
+			var create_form=$("#problem-level").val();
+			if (create_form) {
+				//need to do fireEvent for these values:
+				//  #submitter-id  #product   #supporting-device-product
+				//	$("#submitter-id").val("systest").trigger("change");
+				//	$("#product").val("vsrx-series").trigger("change");
+				//	$("#supporting-device-product").val("vsrx-series").trigger("change");
+				if (form_value_list['submitter-id'])  { 
+					$('#submitter-id').val(form_value_list['submitter-id']).trigger("change");
+				}
+				if (form_value_list['product'])  { 
+					$('#product').val(form_value_list['product']).trigger("change");
+				}
+				if (form_value_list['supporting-device-product'])  { 
+					$('#supporting-device-product').val(form_value_list['supporting-device-product']).trigger("change");
+				}
+				//write other value to web form
+				$.each(form_value_list, function(i, field){
+						//skip fireEvent id
+						if ((i!='submitter-id') || (i!='product') || (i!='supporting-device-product') ) {
+							$("#"+i).val(field);
+						}
+					});
+			}
+			else {
+				alert("Sorry,You are not in PR Create page!");
+				return;
+			}
+			
+		}
+		//public template value
+		var public_value_list=local_to_obj(public_name);
+		if (public_value_list) {
+					$.each(public_value_list, function(i, field){
+						$("#"+i).val(field);
+				});
 		}
 }
 

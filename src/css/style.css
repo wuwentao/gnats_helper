@@ -1,0 +1,281 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Open Sans Light'), local('OpenSans-Light'), url(https://gnats.juniper.net/web/default/775413/attachments/OpenSans.woff) format('woff');
+}
+#wtwu_div{
+      position:fixed;
+      bottom:50px;
+      right:10px;
+}
+body { padding-top: 56px; }
+#wtwu_content {
+	margin: 0px 0px;
+	position:fixed;
+	top:0px;
+	left:0px;
+	right:0px;
+	z-index:99;
+}
+.wtwu_menu, .wtwu_menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  line-height: 1;
+}
+.wtwu_menu {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	float: left;
+	font-family: 'Open Sans', sans-serif;
+	list-style: none;
+	background: #3498DB;
+	box-shadow: 0 1px 3px #dedede;
+  /* ribbon */
+  /* first level */
+  /* end of first level */
+  /* sub 1st level */
+  /* submenu */
+}
+/*
+.wtwu_menu:before, .wtwu_menu:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0px;
+  height: 0px;
+  width: 0px;
+  border: 23px solid #3498DB;
+  z-index: 100;
+}
+.wtwu_menu:before {
+  border-left-color: transparent;
+  left: -30px;
+}
+.wtwu_menu:after {
+  border-right-color: transparent;
+  right: -30px;
+}
+*/
+.wtwu_menu > li {
+  display: inline-block;
+  margin: 0 12px;
+  padding: 0;
+  line-height: 1;
+  float: left;
+  line-height: 1;
+  position: relative;
+}
+.wtwu_menu > li:hover > a {
+  color: #000;
+  /*top menu color,when mouse out,mouse in sub menu*/
+}
+.wtwu_menu > li:last-child > a:after {
+  display: none;
+}
+.wtwu_menu > li > a {
+  display: inline-block;
+  padding: 15px 20px;
+  position: relative;
+  text-decoration: none;
+  color: #fff;
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px;
+  text-shadow: 1px 2px 3px #ff0000;
+  -moz-transition: color 0.3s linear;
+  -o-transition: color 0.3s linear;
+  -webkit-transition: color 0.3s linear;
+  transition: color 0.3s linear;
+  /*top menu default link color */
+}
+.wtwu_menu > li > a:after {
+  content: "";
+  font-family: 'Typicons', sans-serif;
+  position: absolute;
+  right: -24px;
+  padding-top: 1px;
+}
+.wtwu_menu > li > a:hover {
+  color: #2ECC71;
+  /*top menu color,when mouse over*/
+}
+.wtwu_menu > li:hover > ul {
+  left: 0;
+  opacity: 1;
+  top: 44px;
+  /*first sub menu position*/
+}
+.wtwu_menu ul {
+  position: absolute;
+  left: -9999px;
+  padding-top: 10px;
+  border-bottom: 1px solid #fff;
+  opacity: 0;
+  -moz-transition: opacity 0.3s linear;
+  -o-transition: opacity 0.3s linear;
+  -webkit-transition: opacity 0.3s linear;
+  transition: opacity 0.3s linear;
+  /* top arrow */
+  /* sub 2nd level */
+}
+.wtwu_menu ul:before, .wtwu_menu ul:after {
+  content: '';
+  display: block;
+  position: absolute;
+   /*all the sub menu*/
+}
+.wtwu_menu ul:before {
+  height: 9px;
+  width: 9px;
+  border: 1px solid #fff;
+  border-right: 0;
+  border-bottom: 0;
+  top: 5px;
+  left: 25px;
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+  background: #3498DB;
+   /*all the sub menu*/
+}
+.wtwu_menu ul:after {
+  height: 1px;
+  width: 12px;
+  background: #3498DB;
+  top: 10px;
+  left: 24px;
+   /*all the sub menu*/
+}
+.wtwu_menu ul li {
+  display: block;
+  position: relative;
+  border: 1px solid #ccc;
+  border-bottom: 0;
+  width: 160px;
+  text-align: justify;
+  background: #3498DB;
+  box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.1);
+  -moz-transition: background 0.3s linear;
+  -o-transition: background 0.3s linear;
+  -webkit-transition: background 0.3s linear;
+  transition: background 0.3s linear;
+  /* all the sub menu */
+}
+.wtwu_menu ul li:last-child {
+  border-bottom: 1px;
+}
+.wtwu_menu ul li:hover {
+  background: #3498DB;
+  color: #2ECC71;
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 95%, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0)));
+  background-image: -moz-linear-gradient(-90deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+  background-image: -o-linear-gradient(-90deg,rgba(255,255,255,0.5),rgba(255,255,25,0));
+  /* second sub*/
+}
+.wtwu_menu ul li:hover a {
+  color: #fff;
+  text-shadow: 1px 2px 3px #ff0000;
+  -moz-transition: color 0.3s linear;
+  -o-transition: color 0.3s linear;
+  -webkit-transition: color 0.3s linear;
+  transition: color 0.3s linear;
+  /* second sub ,when mouse over*/
+}
+.wtwu_menu ul li a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  padding: 7px 12px 7px 20px;
+  -moz-transition: color 0.3s linear;
+  -o-transition: color 0.3s linear;
+  -webkit-transition: color 0.3s linear;
+  transition: color 0.3s linear;
+  /* first sub */
+}
+.wtwu_menu ul li a:hover {
+  color: #2ECC71;
+  text-shadow: 1px 2px 3px #ff0000;
+  -moz-transition: color 0.3s linear;
+  -o-transition: color 0.3s linear;
+  -webkit-transition: color 0.3s linear;
+  transition: color 0.3s linear;
+  /* sub menu ,when mouse over*/
+}
+.wtwu_menu ul li ul {
+  opacity: 1;
+}
+.wtwu_menu ul li ul:before {
+  font-family: sans-serif;
+  color: #fff;
+  content: '\00BB';
+  background: none;
+  opacity: 1;
+  position: absolute;
+  left: 10140px;
+  top: -25px;
+  z-index: 1;
+  -moz-transform: none;
+  -ms-transform: none;
+  -webkit-transform: none;
+  transform: none;
+  border: 0;
+}
+.wtwu_menu ul li:hover > ul {
+  left: 155px;
+  opacity: 1;
+  top: -11px;
+  padding-left: 12px;
+  border-bottom: 0;
+  box-shadow: none;
+  /* second level sub menu position*/
+}
+.wtwu_menu ul li:hover > ul:before {
+  content: '';
+  border: 1px solid #999;
+  border-right: 0;
+  border-bottom: 0;
+  top: 20px;
+  left: 8px;
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  background: #3498DB;
+  z-index: -1;
+  /* second level sub menu*/
+}
+.wtwu_menu ul li:hover > ul:after {
+  height: 10px;
+  width: 1px;
+  top: 20px;
+  left: 12px;
+  /* second level sub menu*/
+}
+
+/* search form style */
+.wtwu_menu li.search {
+	float: right;
+}
+.wtwu_menu li.search form {
+	margin: 13px 20px 0 0;
+}
+.wtwu_menu li.search form input.search {
+	height: 26px;
+	float: right;
+	padding-left: 5px;
+	padding-right: 5px;
+	color: #777;
+	outline: none;
+	border: solid 1px #dedede;
+	-o-transition: border .3s linear;
+	-moz-transition: border .3s linear;
+	-webkit-transition: border .3s linear;
+	transition: border .3s linear;
+}
+.wtwu_menu li.search form input.search:focus {
+	border-color: #fff;
+}

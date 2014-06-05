@@ -9,3 +9,10 @@ body { padding-top: 56px; }
 	margin: 0px 0px;
 	width: 300px;
 }
+
+#options {
+	margin: 0px 0px;
+	width: 800px;
+	margin-left:auto;
+	margin-right:auto;
+}

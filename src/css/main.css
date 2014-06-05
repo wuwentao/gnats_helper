@@ -75,7 +75,7 @@ body { padding-top: 56px; }
 	width: 170px;
 }
 .wtwu_menu ul {
-	top: 47px;
+	top: 46px;
 	left: 0;
 	padding-top: 10px;
 }
@@ -124,7 +124,7 @@ body { padding-top: 56px; }
 .wtwu_menu ul li ul {
 	top: 0;
 	left: 100%;
-	padding-left: 1px;
+	padding-left: 0px;
 }
 .wtwu_menu ul li {
 	clear: both;

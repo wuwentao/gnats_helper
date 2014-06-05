@@ -7,6 +7,7 @@
       "default_popup": "popup.html",
       "default_title": "Juniper Gnats Helper"
    },
+   "options_page": "options.html",
    "content_scripts": [ {
       "all_frames": true,
       "exclude_globs": [  ],
@@ -15,13 +16,12 @@
       "js": [ 
 			"libs/jquery/jquery.min.js",
 			"libs/bootstarp/js/bootstrap.min.js",
-			"js/menu.js",
 			"js/main.js"
 			],
 	  "css": [
 			"libs/bootstarp/css/bootstrap.min.css",
 			"libs/font-awesome/css/font-awesome.min.css",
-			"css/main.css"
+			"css/style.css"
 			],
 	  "matches": [ "https://gnats.juniper.net/*" ],
       "run_at": "document_end"
