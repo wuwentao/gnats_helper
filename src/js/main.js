@@ -84,20 +84,7 @@ $("#toolbar").hide();
 		$("#save_query_template").on( "click", function(){
 			save_query_to_local();
 		});
-	
-		//write default template to form
-		$("#sbu").on( "click", function(){
-			invoke_templates();
-		});
-	
-		$("#pdt").on( "click", function(){
-			invoke_templates();
-		});
-	
-		$("#x47").on( "click", function(){
-			var form_value=get_web_form();
-		});
-		
+			
 		//hide gnats helper
 		$("#show_old").on( "click", function(){
 			$("#wtwu_content").hide();
@@ -111,18 +98,17 @@ $("#toolbar").hide();
 		//	$("#footer").after(ui_menu.join(""));
 		//	$("#toolbar").hide();
 		//});
-	
-		
+			
 		//add action list for pr template 
 		//it will write localStorage PR template to create_form
 		if (memu_pr_template_list) {
 				$.each(memu_pr_template_list, function(n,my_value){
-						$("#"+my_value).on("click", function(){ write_web_form(my_value); });
+						$("#edit_"+my_value).on("click", function(){ write_web_form(my_value); });
+						$("#delete_"+my_value).on("click", function(){ delete_pr_template(my_value); });
 					});
 			
 		}
-		
-		
+
 	});
 
 
@@ -139,15 +125,10 @@ function DivUI() {
 	
 	//start to add javascript to gnats web
 	html.push('<script type="text/javascript">');
-	
-	//toTop jquery
     html.push('$("#toTop").click( function () { $("html,body").animate({ "scrollTop" : 0 }, 500); });');
-    //toBottom jquery
-	//page height
     html.push('var windowHeight = parseInt($("body").css("height" ));');
     html.push('$( "#toBottom").click(function () { $( "html,body").animate({ "scrollTop" : windowHeight }, 500); });');
-	
-	 html.push('</script>');
+	html.push('</script>');
 	//end to add javascript to gnats web
 	
 	return html;
@@ -198,7 +179,7 @@ function MenuUI() {
 				if (memu_pr_template_list) {
 					html.push('<ul>');
 						$.each(memu_pr_template_list, function(n,my_value){
-						html.push('<li id="'+my_value+'"><a href="Javascript:void(0)">'+my_value+'</a></li>');
+						html.push('<li id="edit_'+my_value+'"><a href="Javascript:void(0)">'+my_value+'</a></li>');
 					});
 					html.push('</ul>');
 				}	
@@ -211,7 +192,7 @@ function MenuUI() {
 			html.push('<li><a href="Javascript:void(0)">vSRX Template</a></li>');
 			html.push('</ul>');
 		html.push('</li>');
-		html.push('<li><a href="Javascript:void(0)">Manager Template</a></li>');
+		html.push('<li data-toggle="modal" data-target="#pr_template_list"><a href="Javascript:void(0)">Manager Template</a></li>');
 		html.push('</ul>');
 	html.push('</li>');
 	html.push('<li><a href="Javascript:void(0)"><i class="fa fa-retweet"></i>Query Template</a>');
@@ -240,6 +221,33 @@ function MenuUI() {
     html.push('</li>');
 	html.push('</ul>');
 	html.push('</div>');
+	
+	/*<!-- PR manager -->*/
+	html.push('<div class="modal fade" id="pr_template_list" tabindex="-1" role="dialog" aria-labelledby="PR_Template_Label" aria-hidden="true">');
+  	html.push('<div class="modal-dialog">');
+    	html.push('<div class="modal-content">');
+			html.push('<div class="modal-header">');
+			html.push('<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>');
+			html.push('<h4 class="modal-title" id="PR_Template_Label">PR Template manager</h4>');
+			html.push('</div>');
+				html.push('<div class="modal-body">');
+					html.push('<div class="list-group"');
+						if (memu_pr_template_list) {
+							html.push('<ul>');
+								$.each(memu_pr_template_list, function(n,my_value){
+								html.push('<a href="Javascript:void(0)" class="list-group-item"> <div class="btn btn-danger btn-xs" id="delete_'+my_value+'">  <i class="fa fa-trash-o"></i> Delete</div>     '+my_value+'    </a> ');
+							});
+							html.push('</ul>');
+						}
+					html.push('</div>');
+				html.push('</div>');
+      	html.push('<div class="modal-footer">');
+        html.push('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
+        html.push('<button type="button" class="btn btn-primary">Save changes</button>');
+      	html.push('</div>');
+    	html.push('</div><!-- /.modal-content -->');
+  	html.push('</div><!-- /.modal-dialog -->');
+	html.push('</div><!-- /.modal -->');
 	
 	return html;
 }
@@ -346,10 +354,10 @@ function replace_default_value(obj_name) {
 		}
 		//delete from/how-to-repeat/description/environment,these value will always use public template
 		// from: and how-to-repate need use ' to delete it
-		delete obj_name['from:'];
-		delete obj_name["description"];
-		delete obj_name["environment"];
-		delete obj_name['how-to-repeat'];
+		//delete obj_name['from:'];
+		//delete obj_name["description"];
+		//delete obj_name["environment"];
+		//delete obj_name['how-to-repeat'];
 	return obj_name;
 	}	
 }
@@ -464,19 +472,22 @@ function write_web_form(local_name) {
 				//	$("#submitter-id").val("systest").trigger("change");
 				//	after set this value to the form,will delete it from form_value_list
 				if (form_value_list['submitter-id'])  { 
-					$('#submitter-id').val(form_value_list['submitter-id']).trigger("change");
+					$('#submitter-id').val(form_value_list['submitter-id']).change();
+					//$('#submitter-id').val(form_value_list['submitter-id']).trigger("change");
 					//document.getElementById('submitter-id').onload = _fireEvent('submitter-id', form_value_list['submitter-id'],'change');
 					console.log(form_value_list['submitter-id']);
 					delete form_value_list['submitter-id'];
 				}
 				if (form_value_list['product'])  { 
-					$('#product').val(form_value_list['product']).trigger("change");
+					$('#product').val(form_value_list['product']).change();
+					//$('#product').val(form_value_list['product']).trigger("change");
 					//document.getElementById('product').onload = _fireEvent('product', form_value_list['product'],'change');
 					console.log(form_value_list['product']);
 					delete form_value_list['product'];
 				}
 				if (form_value_list['supporting-device-product'])  { 
-					$('#supporting-device-product').val(form_value_list['supporting-device-product']).trigger("change");
+					$('#supporting-device-product').val(form_value_list['supporting-device-product']).change();
+					//$('#supporting-device-product').val(form_value_list['supporting-device-product']).trigger("change");
 					//document.getElementById('supporting-device-product').onload = _fireEvent('supporting-device-product', form_value_list['supporting-device-product'],'change');
 					delete form_value_list['supporting-device-product'];
 				}
@@ -618,6 +629,16 @@ function write_web_form2(local_name) {
 		}
 }
 
+
+
+//write PR form value from local template
+function delete_pr_template(local_name) {
+		//local temlate value 
+		//form_value_list is not null
+		var form_value_list=local_to_obj(local_name);
+		alert("Delete :"+local_name);
+		console.log(local_name);
+}
 
 
 /*
