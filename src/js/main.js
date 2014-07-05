@@ -13,39 +13,71 @@ var  pr_template_list="__PR_TEMPLATE_LIST__";
 var  query_template_list="__QUERY_TEMPLATE_LIST__";
 var  gnats_helper_ver="0.1" 
 
-var  default_name = "Default_template";
-var  default_template = '{"synopsis":"Department:Project:Feature-Tested:Subcategory(optional):<one-line summary>"}';
+var  default_pr_name = "Default_PR";
+var  default_pr_template = '{"synopsis":"Department:Project:Feature-Tested:Subcategory(optional):<one-line summary>"}';
+var  default_query_name = "Default_Query";
+var  default_query_template = '{"synopsis":"Department:Project:Feature-Tested:Subcategory(optional):<one-line summary>"}';
+
 var  public_name="__PUBLIC_TEMPLATE__"
 var  public_template =  '{"description":"##################################################################\\n1.    SYMPTOMS AND FREQUENCY OF OCCURRENCE\\n##################################################################\\nREPLACE WITH SYMPTOMS AND FREQUENCY OF OCCURRENCE\\n\\n\\n\\n##################################################################\\n2.    EXPECTED-BEHAVIOR\\n##################################################################\\nREPLACE WITH EXPECTED-BEHAVIOR\\n\\n\\n\\n##################################################################\\n3.    ORIGINATOR-ANALYSIS\\n      E.G. MAIN-FINDINGS, EXCERPTS OF RELEVANT COUNTERS/LOGS/SHOW COMMANDS\\n##################################################################\\nREPLACE WITH ORIGINATOR-ANALYSIS \\n\\n\\n\\n#################################################################################\\n4.    MORE-INFO\\n      E.G. LOCATION OF COMPLETE CONFIGS, SYSLOGS, FDA OUTPUT, DETAILED COUNTERS\\n#################################################################################\\nREPLACE WITH MORE-INFO\\n\\n\\n##################################################################\\n5.    METADATA (DO NOT MODIFY METADATA VALUES!!!)\\n##################################################################\\nMETADATA_START\\nTEMPLATE_TYPE:SBU\\nTEMPLATE_VERSION:2012071302\\nMETADATA_END",\
 						  "environment":"##################################################################\\n1.    TOPOLOGY\\n##################################################################\\nREPLACE WITH TOPOLOGY\\n\\n##################################################################\\n2.    TRAFFIC-PROFILE\\n##################################################################\\n------------------------------------------------------------------\\n- TRAFFIC PROTOCOLS SENT\\n------------------------------------------------------------------\\nREPLACE WITH TRAFFIC PROTOCOLS SENT\\n\\n------------------------------------------------------------------\\n- EXTERNAL TRAFFIC GENERATOR\'S PROFILE\\n------------------------------------------------------------------\\nN/A or REPLACE HERE",\
 						  "how-to-repeat":"##################################################################\\nSTEPS TO REPRODUCE\\n##################################################################\\nREPLACE HERE\\n\\nOR\\n\\n##################################################################\\nTEST-STEPS (if reproduce steps not known)\\n##################################################################\\nREPLACE HERE"}';
 
+						  
+var isEmptyValue = function(value) {
+    var type;
+    if(value == null) { //  value === undefined || value === null
+        return true;
+    }
+    type = Object.prototype.toString.call(value).slice(8, -1);
+    switch(type) {
+        case 'String':
+            return !$.trim(value);
+        case 'Array':
+            return !value.length;
+        case 'Object':
+            return $.isEmptyObject(value); 
+        default:
+            return false;
+    }
+};			  
+						  
 //check localStore
-function check_public() {
-	// if pr_template_list not exist in localStorage
+function check_default() {
+	// if template_list not exist in localStorage
 	// it's first time running,add default value to localStorage
-	if (!window.localStorage.getItem(pr_template_list)) {
-		window.localStorage.setItem(pr_template_list,default_name);
-		window.localStorage.setItem(default_name,default_synopsis);
+	if (isEmptyValue(window.localStorage.getItem(pr_template_list))) {
+		window.localStorage.setItem(pr_template_list,default_pr_name);
+		window.localStorage.setItem(default_pr_name,default_pr_template);
 		}
-	if (!window.localStorage.getItem(public_name)) {
+	if (isEmptyValue(window.localStorage.getItem(query_template_list))) {
+		window.localStorage.setItem(query_template_list,default_query_name);
+		window.localStorage.setItem(default_query_name,default_query_template);
+		}
+	if (isEmptyValue(window.localStorage.getItem(public_name))) {
 		window.localStorage.setItem(public_name,public_template);
 	}
 }
 
-check_public();
-
 //get template_list from local store
 //pr_template_list will save PR tempalte name ,it split each name with ,
 function get_template_list(local_name) {
-	var my_template_list=window.localStorage.getItem(local_name);
-	var my_template_list_arr=my_template_list.split(",");
-	return my_template_list_arr;
+		var my_template_list=window.localStorage.getItem(local_name);
+		if (!isEmptyValue(my_template_list)) {
+			var my_template_list_arr=my_template_list.split(",");
+			return my_template_list_arr;
+		}
+		else {
+			return "";
+		}
 }
+
+
+check_default();
 
 //get the pr/query template name list from localStorage
 var memu_pr_template_list=get_template_list(pr_template_list);
-//var memu_query_template_list=get_template_list(query_template_list);
+var memu_query_template_list=get_template_list(query_template_list);
 
 var dbinfo=$("#dbinfo").html();
 var mytemp=/user:\ *(\w*)/im;
@@ -83,8 +115,8 @@ $("#toolbar").hide();
 		//save Query template to local
 		$("#save_query_template").on( "click", function(){
 			save_query_to_local();
-		});
-			
+		})
+		
 		//hide gnats helper
 		$("#show_old").on( "click", function(){
 			$("#wtwu_content").hide();
@@ -101,10 +133,17 @@ $("#toolbar").hide();
 			
 		//add action list for pr template 
 		//it will write localStorage PR template to create_form
-		if (memu_pr_template_list) {
+		if (!isEmptyValue(memu_pr_template_list)) {
 				$.each(memu_pr_template_list, function(n,my_value){
-						$("#edit_"+my_value).on("click", function(){ write_web_form(my_value); });
-						$("#delete_"+my_value).on("click", function(){ delete_pr_template(my_value); });
+						$("#edit_pr_"+my_value).on("click", function(){ write_web_form(my_value); });
+						$("#del_pr_"+my_value).on("click", function(){ delete_pr_template(my_value); });
+					});
+			
+		}
+		if (!isEmptyValue(memu_query_template_list)) {
+				$.each(memu_query_template_list, function(n,my_value){
+						$("#query_pr_"+my_value).on("click", function(){ query_pr(my_value); });
+						$("#del_query_"+my_value).on("click", function(){ delete_query_template(my_value); });
 					});
 			
 		}
@@ -176,11 +215,11 @@ function MenuUI() {
 		html.push('<ul>');
 		html.push('<li id="save_pr_template"><a href="Javascript:void(0)">Save as Template</a></li>');
 		html.push('<li><a href="Javascript:void(0)">My Template</a>');			
-				if (memu_pr_template_list) {
+				if (!isEmptyValue(memu_pr_template_list)) {
 					html.push('<ul>');
 						$.each(memu_pr_template_list, function(n,my_value){
-						html.push('<li id="edit_'+my_value+'"><a href="Javascript:void(0)">'+my_value+'</a></li>');
-					});
+							html.push('<li id="edit_pr_'+my_value+'"><a href="Javascript:void(0)">'+my_value+'</a></li>');
+						});
 					html.push('</ul>');
 				}	
 		html.push('</li>');
@@ -197,18 +236,25 @@ function MenuUI() {
 	html.push('</li>');
 	html.push('<li><a href="Javascript:void(0)"><i class="fa fa-retweet"></i>Query Template</a>');
 		html.push('<ul>');
-		html.push('<li id="save_query_template"><a href="Javascript:void(0)">Save Template</a></li>');
-		html.push('<li><a href="Javascript:void(0)">SBU Template</a></li>');
-		html.push('<li><a href="Javascript:void(0)">PDT Template</a></li>');
-		html.push('<li><a href="Javascript:void(0)">X47 Template</a></li>');
-		html.push('<li><a href="Javascript:void(0)">vSRX Template</a></li>');
+		html.push('<li id="save_query_template"><a href="Javascript:void(0)">Save as Template</a></li>');
+		html.push('<li><a href="Javascript:void(0)">My Template</a>');
+			if (!isEmptyValue(memu_query_template_list)) {
+					html.push('<ul>');
+						$.each(memu_query_template_list, function(n,my_value){
+							html.push('<li id="query_pr_'+my_value+'"><a href="Javascript:void(0)">'+my_value+'</a></li>');
+						});
+					html.push('</ul>');
+				}
+		html.push('</li>');
+		html.push('<li><a href="Javascript:void(0)">Public Template</a></li>');
+		html.push('<li data-toggle="modal" data-target="#query_template_list"><a href="Javascript:void(0)">Manager Template</a></li>');
 		html.push('</ul>');
 	html.push('</li>');
 	html.push('<li><a href="/web/default/help"><i class="fa fa-leaf"></i>Help</a>');
 		html.push('<ul>');
 		html.push('<li><a href="/web/">All DBs</a></li>');
-		html.push('<li><a href="web/default/az-help">a-z Fields</a></li>');
-		html.push('<li><a href="web/default/changes">Gnats Changes</a></li>');
+		html.push('<li><a href="/web/default/az-help">a-z Fields</a></li>');
+		html.push('<li><a href="/web/default/changes">Gnats Changes</a></li>');
 		html.push('<li><a href="mailto:wtwu@juniper.net?subject=Report a Gnats Helper Bug">Report Bug</a></li>');
 		html.push('<li><a href="mailto:wtwu@juniper.net?subject=Gnats Helper new requirement">New Requirement</a></li>');
 		html.push('<li><a href="Javascript:void(0)">About Gnats Helper</a></li>');
@@ -232,10 +278,37 @@ function MenuUI() {
 			html.push('</div>');
 				html.push('<div class="modal-body">');
 					html.push('<div class="list-group"');
-						if (memu_pr_template_list) {
+						if (!isEmptyValue(memu_pr_template_list)) {
 							html.push('<ul>');
 								$.each(memu_pr_template_list, function(n,my_value){
-								html.push('<a href="Javascript:void(0)" class="list-group-item"> <div class="btn btn-danger btn-xs" id="delete_'+my_value+'">  <i class="fa fa-trash-o"></i> Delete</div>     '+my_value+'    </a> ');
+								html.push('<a href="Javascript:void(0)" class="list-group-item"> <div class="btn btn-danger btn-xs" id="del_pr_'+my_value+'">  <i class="fa fa-trash-o"></i> Delete</div>     '+my_value+'    </a> ');
+							});
+							html.push('</ul>');
+						}
+					html.push('</div>');
+				html.push('</div>');
+      	html.push('<div class="modal-footer">');
+        html.push('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
+        html.push('<button type="button" class="btn btn-primary">Save changes</button>');
+      	html.push('</div>');
+    	html.push('</div><!-- /.modal-content -->');
+  	html.push('</div><!-- /.modal-dialog -->');
+	html.push('</div><!-- /.modal -->');
+	
+	/*<!-- Query manager -->*/
+	html.push('<div class="modal fade" id="query_template_list" tabindex="-1" role="dialog" aria-labelledby="Query_Template_Label" aria-hidden="true">');
+  	html.push('<div class="modal-dialog">');
+    	html.push('<div class="modal-content">');
+			html.push('<div class="modal-header">');
+			html.push('<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>');
+			html.push('<h4 class="modal-title" id="Query_Template_Label">Query Template manager</h4>');
+			html.push('</div>');
+				html.push('<div class="modal-body">');
+					html.push('<div class="list-group"');
+						if (!isEmptyValue(memu_query_template_list)) {
+							html.push('<ul>');
+								$.each(memu_query_template_list, function(n,my_value){
+								html.push('<a href="Javascript:void(0)" class="list-group-item"> <div class="btn btn-danger btn-xs" id="del_query_'+my_value+'">  <i class="fa fa-trash-o"></i> Delete</div>     '+my_value+'    </a> ');
 							});
 							html.push('</ul>');
 						}
@@ -267,7 +340,7 @@ function get_Browerinfo() {
 
 //localStorage object to javascript object
 function local_to_obj(local_name) {
-		if (local_name)	{
+		if (!isEmptyValue(local_name))	{
 			var obj_name = JSON.parse(localStorage.getItem(local_name));
 			return obj_name;
 		}
@@ -277,7 +350,7 @@ function local_to_obj(local_name) {
 }
 //javascript object to localStorage
 function obj_to_local(obj_name,local_name) {
-		if ( obj_name && local_name)  {
+		if ( !isEmptyValue(obj_name) && !isEmptyValue(local_name))  {
 			localStorage.setItem(local_name,JSON.stringify(obj_name));
 		}
 		else {
@@ -345,24 +418,17 @@ return replace_default_value(gnats_web)
 
 //replate null and default value from web form before save to local
 function replace_default_value(obj_name) {
-	if (obj_name) {
+	if (!isEmptyValue(obj_name)) {
 		for (var p in obj_name) { 
 		//delete null value and default value in form data
 			if ((obj_name[p]) =="" || (obj_name[p]) =="type for auto-completion" || (obj_name[p]) =="unknown" || (obj_name[p]) =="enter the number(s) of the testcase(s) generated for gap closure" || (obj_name[p]) =="11\r\n11" || (obj_name[p]) ==" ") {
 				delete obj_name[p];
 			}
 		}
-		//delete from/how-to-repeat/description/environment,these value will always use public template
-		// from: and how-to-repate need use ' to delete it
-		//delete obj_name['from:'];
-		//delete obj_name["description"];
-		//delete obj_name["environment"];
-		//delete obj_name['how-to-repeat'];
 	return obj_name;
 	}	
 }
 
-//var form_id_list=["synopsis","reported-in","last-known-working-release","submitter-id","found-during","functional-area","class","pr-impact","product","platform","software-image","category","client-os","client-browser","problem-level","cve-id","cvss-base-score","cwe-id","keywords","configuration","notify-list","customer","related-prs","rli","npi-program","testcase-id","jtac-case-id","support-notes","supporting-device-release","supporting-device-product","supporting-device-platform","supporting-device-sw-image","description","corefile-location","corefile-stacktrace","environment","how-to-repeat","beta-programs","release-build-date","beta-customers","release-deploy-date","fix"];
  
 //get create PR form value,Step1
 function get_web_form2() {
@@ -377,7 +443,7 @@ function get_web_form2() {
 
 //display a form to input the template name,Step2
 function get_template_name() {
-	template_name=window.prompt("\n All the form data has been saved!\n\nPlease input the template name:",myname+"_template1");
+	template_name=window.prompt("\n\nPlease input the template name:",myname+"_template1");
 	return template_name;
 }
 
@@ -385,17 +451,17 @@ function get_template_name() {
 function template_name_to_local(template_name,local_name) {
 	//check local_template_list
 	//if pr_template_list is null
-	if (template_name && local_name) {
-		var local_pr_template_list = window.localStorage.getItem(local_name);
+	if (!isEmptyValue(template_name) && !isEmptyValue(local_name)) {
+		var local_template_list = window.localStorage.getItem(local_name);
 		//if no localStorage data,then add default
-		if (!local_pr_template_list) {
+		if (isEmptyValue(local_template_list)) {
 			check_public();
 		}
 		else {
 			//add a , to split the string as a array
-			var my_pr_template_list=local_pr_template_list+","+template_name;
+			var my_template_list=local_template_list+","+template_name;
 			//add a ,to split the string as a array
-			window.localStorage.setItem(local_name,my_pr_template_list);
+			window.localStorage.setItem(local_name,my_template_list);
 		}
 }
 }
@@ -403,7 +469,7 @@ function template_name_to_local(template_name,local_name) {
 //save web to localStorage
 function template_data_to_local(obj_name,local_name) {
 	//check web object is available
-	if (obj_name && local_name) {
+	if (!isEmptyValue(obj_name) && !isEmptyValue(local_name)) {
 		//save object to localStorage
 		//Note:the same value will be overwrite,we don't check it now
 		obj_to_local(obj_name,local_name);
@@ -431,10 +497,10 @@ function save_pr_to_local() {
 		//var my_template_obj_temp=get_web_form();
 		//check create_form and problem-level form value is not null
 		var create_form=$("#problem-level").val();
-		if (create_form) {
+		if (!isEmptyValue(create_form)) {
 			var my_template_obj=get_web_form();
 			var my_template_name=get_template_name();
-			if (my_template_obj && my_template_name) {
+			if (!isEmptyValue(my_template_obj) && !isEmptyValue(my_template_name)) {
 				template_name_to_local(my_template_name,pr_template_list);
 				template_data_to_local(my_template_obj,my_template_name)
 			}
@@ -460,10 +526,10 @@ function write_web_form(local_name) {
 		//form_value_list is not null
 		var form_value_list=local_to_obj(local_name);
 		console.log(form_value_list);
-		if (form_value_list) {
+		if (!isEmptyValue(form_value_list)) {
 			//check create_form and problem-level form value is not null
 			var create_form=$("#problem-level").val();
-			if (create_form) {
+			if (!isEmptyValue(create_form)) {
 				//write these values to web form
 				//product,platform,software-image,client-os,client-browser are array value
 				
@@ -471,21 +537,21 @@ function write_web_form(local_name) {
 				//  submitter-id  product   supporting-device-product
 				//	$("#submitter-id").val("systest").trigger("change");
 				//	after set this value to the form,will delete it from form_value_list
-				if (form_value_list['submitter-id'])  { 
+				if (!isEmptyValue(form_value_list['submitter-id']))  { 
 					$('#submitter-id').val(form_value_list['submitter-id']).change();
 					//$('#submitter-id').val(form_value_list['submitter-id']).trigger("change");
 					//document.getElementById('submitter-id').onload = _fireEvent('submitter-id', form_value_list['submitter-id'],'change');
 					console.log(form_value_list['submitter-id']);
 					delete form_value_list['submitter-id'];
 				}
-				if (form_value_list['product'])  { 
+				if (!isEmptyValue(form_value_list['product']))  { 
 					$('#product').val(form_value_list['product']).change();
 					//$('#product').val(form_value_list['product']).trigger("change");
 					//document.getElementById('product').onload = _fireEvent('product', form_value_list['product'],'change');
 					console.log(form_value_list['product']);
 					delete form_value_list['product'];
 				}
-				if (form_value_list['supporting-device-product'])  { 
+				if (!isEmptyValue(form_value_list['supporting-device-product']))  { 
 					$('#supporting-device-product').val(form_value_list['supporting-device-product']).change();
 					//$('#supporting-device-product').val(form_value_list['supporting-device-product']).trigger("change");
 					//document.getElementById('supporting-device-product').onload = _fireEvent('supporting-device-product', form_value_list['supporting-device-product'],'change');
@@ -494,19 +560,19 @@ function write_web_form(local_name) {
 							
 				//part2 have special string  {} ,jQuery not support it
 				//planned-release{1}  , customer-escalation{1} ,  responsible{1} , systest-owner{1} 
-				if (form_value_list['planned-release{1}'])  { 
+				if (!isEmptyValue(form_value_list['planned-release{1}']))  { 
 					document.getElementById('planned-release{1}').value=form_value_list['planned-release{1}'];
 					delete form_value_list['planned-release{1}'];
 				}
-				if (form_value_list['customer-escalation{1}'])  { 
+				if (!isEmptyValue(form_value_list['customer-escalation{1}']))  { 
 					document.getElementById('customer-escalation{1}').value=form_value_list['customer-escalation{1}'];
 					delete form_value_list['customer-escalation{1}'];
 				}
-				if (form_value_list['responsible{1}'])  { 
+				if (!isEmptyValue(form_value_list['responsible{1}']))  { 
 					document.getElementById('responsible{1}').value=form_value_list['responsible{1}'];
 					delete form_value_list['responsible{1}'];
 				}
-				if (form_value_list['systest-owner{1}'])  { 
+				if (!isEmptyValue(form_value_list['systest-owner{1}']))  { 
 					document.getElementById('systest-owner{1}').value=form_value_list['systest-owner{1}'];
 					delete form_value_list['systest-owner{1}'];
 				}
@@ -576,7 +642,7 @@ function write_web_form(local_name) {
 		//public template value
 		//description,environment,how-to-repeat
 		var public_value_list=local_to_obj(public_name);
-		if (public_value_list) {
+		if (!isEmptyValue(public_value_list)) {
 					$.each(public_value_list, function(i, field){
 						$("#"+i).val(field);
 				});
@@ -588,22 +654,22 @@ function write_web_form2(local_name) {
 		//local temlate value 
 		//form_value_list is not null 
 		var form_value_list=local_to_obj(local_name);
-		if (form_value_list) {
+		if (!isEmptyValue(form_value_list)) {
 			//check create_form and problem-level form value is not null
 			var create_form=$("#problem-level").val();
-			if (create_form) {
+			if (!isEmptyValue(create_form)) {
 				//need to do fireEvent for these values:
 				//  #submitter-id  #product   #supporting-device-product
 				//	$("#submitter-id").val("systest").trigger("change");
 				//	$("#product").val("vsrx-series").trigger("change");
 				//	$("#supporting-device-product").val("vsrx-series").trigger("change");
-				if (form_value_list['submitter-id'])  { 
+				if (!isEmptyValue(form_value_list['submitter-id']))  { 
 					$('#submitter-id').val(form_value_list['submitter-id']).trigger("change");
 				}
-				if (form_value_list['product'])  { 
+				if (!isEmptyValue(form_value_list['product']))  { 
 					$('#product').val(form_value_list['product']).trigger("change");
 				}
-				if (form_value_list['supporting-device-product'])  { 
+				if (!isEmptyValue(form_value_list['supporting-device-product']))  { 
 					$('#supporting-device-product').val(form_value_list['supporting-device-product']).trigger("change");
 				}
 				//write other value to web form
@@ -622,7 +688,7 @@ function write_web_form2(local_name) {
 		}
 		//public template value
 		var public_value_list=local_to_obj(public_name);
-		if (public_value_list) {
+		if (!isEmptyValue(public_value_list)) {
 					$.each(public_value_list, function(i, field){
 						$("#"+i).val(field);
 				});
@@ -631,13 +697,29 @@ function write_web_form2(local_name) {
 
 
 
-//write PR form value from local template
+//Delete PR Template from localStorage
 function delete_pr_template(local_name) {
 		//local temlate value 
 		//form_value_list is not null
 		var form_value_list=local_to_obj(local_name);
-		alert("Delete :"+local_name);
-		console.log(local_name);
+		var result=window.confirm("Are you sure you will delete PR Template:"+local_name);
+		if (result==true)
+			{
+				//it's the first value
+				if (memu_pr_template_list[0]==local_name)	{
+					memu_pr_template_list.shift();
+					var myresult=memu_pr_template_list.toString();
+				}
+				else {	
+					var new_menu_pr_template_list=memu_pr_template_list.toString();
+					var myresult=new_menu_pr_template_list.replace(","+local_name,"");
+				}
+				
+				window.localStorage.setItem(pr_template_list,myresult);
+				window.localStorage.removeItem(local_name);
+				alert("Delete Success!");
+			}
+		
 }
 
 
@@ -661,41 +743,93 @@ format2:
 
 	
 $.post('https://gnats.juniper.net/web/default/do-query',
-		{adv:1,expr:'(responsible == "wtwu" & state != "suspended" & state != "closed")'},
+		{adv:"1",csv:"0",queryname:"testname",columns:'',expr:'(responsible == "wtwu" & state != "suspended" & state != "closed")'},
 		function(data,status){
 			//console.log("数据：" + data + "\n状态：" + status);
-			if (status=="success") {
-				window.location = 'https://gnats.juniper.net/web/default/do-query';
-			}
+			//if (status=="success") {
+			//	window.location = 'https://gnats.juniper.net/web/default/do-query';
+			//}
 		})	
+
+$.ajax({
+  type: 'POST',
+  url: 'https://gnats.juniper.net/web/default/do-query',
+  data: {adv:"1",csv:"0",queryname:"testname",columns:'synopsis problem-level category class platform planned-release product reported-in state originator responsible target',expr:'(responsible == "wtwu" & state != "suspended" & state != "closed")'},
+  dataType:"html"
+});		
+		
+		
+
+		
 */
 
 
-//save PR form data to localStorage
+//save Query expression data to localStorage
 function save_query_to_local() {
 		//check PR Query Expression in current page
 		//it have two format 
 		var query_result=$("div.code").text();
 		var query_form=$("#expr textarea").text();
 		var query_expr;
-		if (query_result) {
+		if (!isEmptyValue(query_result)) {
 			query_expr=query_result;
 		}
-		else if (query_form)  {
+		else if (!isEmptyValue(query_form))  {
 			query_expr=query_form;
 			}
 		else  {
 			alert("Sorry,This page don't have any PR Query Expression!")
 		}
 		//if query_expr is not null
-		if (query_expr)   {
-			//var my_template_obj=get_web_form();
-			//var my_template_name=get_template_name();
-			//if (my_template_obj && my_template_name) {
-			//	template_name_to_local(my_template_name,pr_template_list);
-			//	template_data_to_local(my_template_obj,my_template_name)
-			alert("Query Expression is:\n"+query_expr)
-			//}
+		if (!isEmptyValue(query_expr))   {
+			var my_template_name=get_template_name();
+			if (!isEmptyValue(my_template_name)) {
+				template_name_to_local(my_template_name,query_template_list);
+				template_data_to_local(query_expr,my_template_name)
+			}
+			//alert("Query Expression is:\n"+query_expr)
 		}
 }
 
+//Query expression to web
+function  query_pr(expr)  {
+		/*window.location = 'https://gnats.juniper.net/web/default/do-query';
+		$(document).ready(function(){
+				$("textarea[name='expr']").val(expr);
+				$("#cols").val('["blocker", "category", "class", "originator", "planned-release", "platform", "problem-level", "product", "state", "synopsis", "target"]');
+				$("#query_form").submit()
+		})
+		*/
+		$.ajax({
+			type: 'POST',
+			url: 'https://gnats.juniper.net/web/default/do-query',
+			data: {adv:"1",csv:"0",queryname:"testname",columns:'synopsis problem-level category class platform planned-release product reported-in state originator responsible target',expr:'(responsible == "wtwu" & state != "suspended" & state != "closed")'},
+			dataType:"html"
+		});		
+
+}
+
+//Delete Query Template from localStorage
+function delete_query_template(local_name) {
+		//local temlate value 
+		//form_value_list is not null
+		var form_value_list=local_to_obj(local_name);
+		var result=window.confirm("Are you sure you will delete Query Template:"+local_name);
+		if (result==true)
+			{
+				//it's the first value
+				if (memu_query_template_list[0]==local_name)	{
+					memu_query_template_list.shift();
+					var myresult=memu_query_template_list.toString();
+				}
+				else {	
+					var new_menu_query_template_list=memu_query_template_list.toString();
+					var myresult=new_menu_query_template_list.replace(","+local_name,"");
+				}
+				
+				window.localStorage.setItem(query_template_list,myresult);
+				window.localStorage.removeItem(local_name);
+				alert("Delete Success!");
+			}
+		
+}
