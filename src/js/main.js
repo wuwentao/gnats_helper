@@ -16,7 +16,7 @@ var  gnats_helper_ver="0.1"
 var  default_pr_name = "Default_PR";
 var  default_pr_template = '{"synopsis":"Department:Project:Feature-Tested:Subcategory(optional):<one-line summary>"}';
 var  default_query_name = "Default_Query";
-var  default_query_template = '{"synopsis":"Department:Project:Feature-Tested:Subcategory(optional):<one-line summary>"}';
+var  default_query_template = '(responsible == "wtwu" & state != "suspended" & state != "closed")';
 
 var  public_name="__PUBLIC_TEMPLATE__"
 var  public_template =  '{"description":"##################################################################\\n1.    SYMPTOMS AND FREQUENCY OF OCCURRENCE\\n##################################################################\\nREPLACE WITH SYMPTOMS AND FREQUENCY OF OCCURRENCE\\n\\n\\n\\n##################################################################\\n2.    EXPECTED-BEHAVIOR\\n##################################################################\\nREPLACE WITH EXPECTED-BEHAVIOR\\n\\n\\n\\n##################################################################\\n3.    ORIGINATOR-ANALYSIS\\n      E.G. MAIN-FINDINGS, EXCERPTS OF RELEVANT COUNTERS/LOGS/SHOW COMMANDS\\n##################################################################\\nREPLACE WITH ORIGINATOR-ANALYSIS \\n\\n\\n\\n#################################################################################\\n4.    MORE-INFO\\n      E.G. LOCATION OF COMPLETE CONFIGS, SYSLOGS, FDA OUTPUT, DETAILED COUNTERS\\n#################################################################################\\nREPLACE WITH MORE-INFO\\n\\n\\n##################################################################\\n5.    METADATA (DO NOT MODIFY METADATA VALUES!!!)\\n##################################################################\\nMETADATA_START\\nTEMPLATE_TYPE:SBU\\nTEMPLATE_VERSION:2012071302\\nMETADATA_END",\
@@ -522,14 +522,16 @@ function _fireEvent(obj_id, obj_value, event) {
 
 //write PR form value from local template
 function write_web_form(local_name) {
+		//check create_form and problem-level form value is not null
+		var create_form=$("#problem-level").val();
+		if (!isEmptyValue(create_form)) {
+			
 		//local temlate value 
 		//form_value_list is not null
 		var form_value_list=local_to_obj(local_name);
-		console.log(form_value_list);
+		//console.log(form_value_list);
 		if (!isEmptyValue(form_value_list)) {
-			//check create_form and problem-level form value is not null
-			var create_form=$("#problem-level").val();
-			if (!isEmptyValue(create_form)) {
+
 				//write these values to web form
 				//product,platform,software-image,client-os,client-browser are array value
 				
@@ -584,7 +586,7 @@ function write_web_form(local_name) {
 					});
 				document.getElementById('synopsis').focus();
 				/*
-				$('#synopsis').val(form_value_list['supporting-device-product']);
+				$('#synopsis').val(form_value_list['synopsis']);
 				$('#reported-in').val(form_value_list['reported-in']);
 				$('#last-known-working-release').val(form_value_list['last-known-working-release']);
 				//$('#submitter-id').val(form_value_list['submitter-id']);
@@ -632,21 +634,21 @@ function write_web_form(local_name) {
 				$('#fix').val(form_value_list['fix']);
 				*/
 				
-			}
-			else {
+				//public template value
+				//description,environment,how-to-repeat
+				var public_value_list=local_to_obj(public_name);
+				if (!isEmptyValue(public_value_list)) {
+						$.each(public_value_list, function(i, field){
+							$("#"+i).val(field);
+						});
+					}
+				}
+		}
+		else {
 				alert("Sorry,You are not in PR Create page!");
 				return;
-			}
-			
 		}
-		//public template value
-		//description,environment,how-to-repeat
-		var public_value_list=local_to_obj(public_name);
-		if (!isEmptyValue(public_value_list)) {
-					$.each(public_value_list, function(i, field){
-						$("#"+i).val(field);
-				});
-		}
+		
 }
 
 //write PR form value from local template
@@ -757,17 +759,14 @@ $.ajax({
   data: {adv:"1",csv:"0",queryname:"testname",columns:'synopsis problem-level category class platform planned-release product reported-in state originator responsible target',expr:'(responsible == "wtwu" & state != "suspended" & state != "closed")'},
   dataType:"html"
 });		
-		
-		
-
-		
+				
 */
 
 
 //save Query expression data to localStorage
 function save_query_to_local() {
 		//check PR Query Expression in current page
-		//it have two format 
+		//it have two formats
 		var query_result=$("div.code").text();
 		var query_form=$("#expr textarea").text();
 		var query_expr;
@@ -787,26 +786,38 @@ function save_query_to_local() {
 				template_name_to_local(my_template_name,query_template_list);
 				template_data_to_local(query_expr,my_template_name)
 			}
-			//alert("Query Expression is:\n"+query_expr)
 		}
 }
 
 //Query expression to web
-function  query_pr(expr)  {
+function  query_pr(query_name)  {
 		/*window.location = 'https://gnats.juniper.net/web/default/do-query';
 		$(document).ready(function(){
 				$("textarea[name='expr']").val(expr);
 				$("#cols").val('["blocker", "category", "class", "originator", "planned-release", "platform", "problem-level", "product", "state", "synopsis", "target"]');
 				$("#query_form").submit()
 		})
-		*/
+		
 		$.ajax({
 			type: 'POST',
 			url: 'https://gnats.juniper.net/web/default/do-query',
 			data: {adv:"1",csv:"0",queryname:"testname",columns:'synopsis problem-level category class platform planned-release product reported-in state originator responsible target',expr:'(responsible == "wtwu" & state != "suspended" & state != "closed")'},
 			dataType:"html"
-		});		
-
+		});	
+		https://gnats.juniper.net/web/default/do-query?expr=%28responsible+%3D%3D+%22wtwu%22+%26+state+%21%3D+%22suspended%22+%26+state+%21%3D+%22closed%22%29&adv=1&queryname=wtwu%27s+responsible+PRs&columns=synopsis%2Creported-in%2Csubmitter-id%2Cproduct%2Ccategory%2Cproblem-level%2Cblocker%2Cplanned-release%2Cstate%2Cresponsible%2Coriginator%2Carrival-date
+		
+		*/
+		if (!isEmptyValue(query_name))   {
+			var expr_value = localStorage.getItem(query_name);
+			if (!isEmptyValue(expr_value))   {
+				//replace the first and last " ,replace \ in the string
+				expr_value=expr_value.replace(/^"/,"");
+				expr_value=expr_value.replace(/"$/,"");
+				expr_value=expr_value.replace(/\\/g,"");
+				var columns='synopsis,reported-in,submitter-id,product,category,problem-level,blocker,planned-release,state,responsible,originator';
+				window.location = "https://gnats.juniper.net/web/default/do-query?adv=1&columns="+escape(columns)+"&expr="+escape(expr_value);
+			}
+		}
 }
 
 //Delete Query Template from localStorage
@@ -830,6 +841,5 @@ function delete_query_template(local_name) {
 				window.localStorage.setItem(query_template_list,myresult);
 				window.localStorage.removeItem(local_name);
 				alert("Delete Success!");
-			}
-		
+			}		
 }
