@@ -382,6 +382,7 @@ gnats_web['cve-id']=$('#cve-id').val();
 gnats_web['cvss-base-score']=$('#cvss-base-score').val();
 gnats_web['cwe-id']=$('#cwe-id').val();
 gnats_web['keywords']=$('#keywords').val();
+gnats_web['attributes']=$('input[name="attributes"]:checkbox:checked').map(function () { return $(this).val(); }).get().join(',');
 gnats_web['configuration']=$('#configuration').val();
 gnats_web['planned-release{1}']=document.getElementById('planned-release{1}').value;
 gnats_web['customer-escalation{1}']=document.getElementById('customer-escalation{1}').value;
@@ -510,139 +511,120 @@ function save_pr_to_local() {
 		}
 }
 
-function _fireEvent(obj_id, obj_value, event) {
+// Function is to create onchange event for select list
+function set_fireEvent_value(obj_id, obj_value, event) {
 	var el = document.getElementById(obj_id);
 	el.onchange = function () {
 		document.getElementById(obj_id).value = obj_value;
 		}
-	var evt=document.createEvent("HTMLEvents");//FF
+	var evt=document.createEvent("MouseEvents");//FF
 	evt.initEvent(event, true, true); 
-	document.getElementById(obj_id).dispatchEvent(evt); 
+	el.dispatchEvent(evt); 
 }
+
+// Function is to set template value to normal text form object
+function set_normal_value(obj_id,obj_value) {
+        if (document.getElementById(obj_id).value.search(obj_value) == -1) {
+                document.getElementById(obj_id).value = obj_value + document.getElementById(obj_id).value;
+        }
+}
+
+// Function is to set template value to text objects with input hints/auto-completion
+function set_focus_value(obj_id, obj_value) {
+	document.getElementById(obj_id).focus();
+    if (document.getElementById(obj_id).value.search('type for auto-completion') == -1) {
+        if (document.getElementById(obj_id).value.search(obj_value) == -1) {
+					document.getElementById(obj_id).value = obj_value + document.getElementById(obj_id).value;
+        }
+    } else {
+		document.getElementById(obj_id).value = obj_value;
+	}
+}
+
 
 //write PR form value from local template
 function write_web_form(local_name) {
 		//check create_form and problem-level form value is not null
-		var create_form=$("#problem-level").val();
+		var create_form=document.getElementById("from:").value;
 		if (!isEmptyValue(create_form)) {
 			
-		//local temlate value 
-		//form_value_list is not null
-		var form_value_list=local_to_obj(local_name);
-		//console.log(form_value_list);
-		if (!isEmptyValue(form_value_list)) {
+			//local temlate value 
+			//form_value_list is not null
+			var form_value_list=local_to_obj(local_name);
+			//console.log(form_value_list);
+			if (!isEmptyValue(form_value_list)) {
 
 				//write these values to web form
-				//product,platform,software-image,client-os,client-browser are array value
+				//type 1: for fireEvent part :  [submitter-id,product,supporting-device-product]
+				//type 2: for auto-completion part,need to focus() : [reported-in,last-known-working-release,category,cwe-id,planned-release{1},responsible{1},systest-owner{1},notify-list,testcase-id,npi-program]
+				//type 3: attributes checkbox
+				//type 4: for array value: [product,platform,software-image,client-os,client-browser] are array value
+				//type 5: normal value []
+				
 				
 				//part1 need to do fireEvent for these values:
 				//  submitter-id  product   supporting-device-product
 				//	$("#submitter-id").val("systest").trigger("change");
 				//	after set this value to the form,will delete it from form_value_list
-				if (!isEmptyValue(form_value_list['submitter-id']))  { 
-					$('#submitter-id').val(form_value_list['submitter-id']).change();
-					//$('#submitter-id').val(form_value_list['submitter-id']).trigger("change");
-					//document.getElementById('submitter-id').onload = _fireEvent('submitter-id', form_value_list['submitter-id'],'change');
-					console.log(form_value_list['submitter-id']);
-					delete form_value_list['submitter-id'];
-				}
-				if (!isEmptyValue(form_value_list['product']))  { 
-					$('#product').val(form_value_list['product']).change();
-					//$('#product').val(form_value_list['product']).trigger("change");
-					//document.getElementById('product').onload = _fireEvent('product', form_value_list['product'],'change');
-					console.log(form_value_list['product']);
-					delete form_value_list['product'];
-				}
-				if (!isEmptyValue(form_value_list['supporting-device-product']))  { 
-					$('#supporting-device-product').val(form_value_list['supporting-device-product']).change();
-					//$('#supporting-device-product').val(form_value_list['supporting-device-product']).trigger("change");
-					//document.getElementById('supporting-device-product').onload = _fireEvent('supporting-device-product', form_value_list['supporting-device-product'],'change');
-					delete form_value_list['supporting-device-product'];
-				}
-							
-				//part2 have special string  {} ,jQuery not support it
-				//planned-release{1}  , customer-escalation{1} ,  responsible{1} , systest-owner{1} 
-				if (!isEmptyValue(form_value_list['planned-release{1}']))  { 
-					document.getElementById('planned-release{1}').value=form_value_list['planned-release{1}'];
-					delete form_value_list['planned-release{1}'];
-				}
-				if (!isEmptyValue(form_value_list['customer-escalation{1}']))  { 
-					document.getElementById('customer-escalation{1}').value=form_value_list['customer-escalation{1}'];
-					delete form_value_list['customer-escalation{1}'];
-				}
-				if (!isEmptyValue(form_value_list['responsible{1}']))  { 
-					document.getElementById('responsible{1}').value=form_value_list['responsible{1}'];
-					delete form_value_list['responsible{1}'];
-				}
-				if (!isEmptyValue(form_value_list['systest-owner{1}']))  { 
-					document.getElementById('systest-owner{1}').value=form_value_list['systest-owner{1}'];
-					delete form_value_list['systest-owner{1}'];
-				}
+				//$('#submitter-id').val(form_value_list['submitter-id']).change();
+				//$('#submitter-id').val(form_value_list['submitter-id']).trigger("change");
+				//document.getElementById('submitter-id').onload = _fireEvent('submitter-id', form_value_list['submitter-id'],'change');
+				//$('#submitter-id').val(form_value_list['submitter-id']).trigger("change");
+				var type1_items=['submitter-id','product','supporting-device-product'];
+				$.each(type1_items, function(n,my_value){
+						if (!isEmptyValue(form_value_list[my_value]))  { 
+								document.getElementById(my_value).onload = set_fireEvent_value(my_value, form_value_list[my_value], 'change');
+								//$("#"+my_value).focus().val(form_value_list[my_value]).trigger("change");
+								//$("#"+my_value).focus().val(form_value_list[my_value]).change();
+								delete form_value_list[my_value];
+						}
+				});
 								
-				//part4
-				//write the rest value to the form
-				$.each(form_value_list, function(i, field){
-							$("#"+i).val(field);
+				//type 2: for auto-completion part,need to focus()
+				var type2_items=['reported-in','last-known-working-release','category','cwe-id','planned-release{1}','customer-escalation{1}','responsible{1}','systest-owner{1}','notify-list','testcase-id','npi-program'];
+				$.each(type2_items, function(n,my_value){
+						if (!isEmptyValue(form_value_list[my_value]))  { 
+								set_focus_value(my_value,form_value_list[my_value]);
+								delete form_value_list[my_value];
+						}
+				});
+												
+				//type 3: attributes
+				if (!isEmptyValue(form_value_list['attributes']))  {
+					var attributes_arr=form_value_list['attributes'].split(",");
+					$.each(attributes_arr, function(n,my_value){
+						$("input:checkbox[value='"+my_value+"']").attr('checked','true');
 					});
-				document.getElementById('synopsis').focus();
-				/*
-				$('#synopsis').val(form_value_list['synopsis']);
-				$('#reported-in').val(form_value_list['reported-in']);
-				$('#last-known-working-release').val(form_value_list['last-known-working-release']);
-				//$('#submitter-id').val(form_value_list['submitter-id']);
-				$('#found-during').val(form_value_list['found-during']);
-				$('#functional-area').val(form_value_list['functional-area']);
-				$('#class').val(form_value_list['class']);
-				$('#pr-impact').val(form_value_list['pr-impact']);
-				//$('#product').val(form_value_list['product']);
-				$('#platform').val(form_value_list['platform']);
-				$('#software-image').val(form_value_list['software-image']);
-				$('#category').val(form_value_list['category']);
-				$('#client-os').val(form_value_list['client-os']);
-				$('#client-browser').val(form_value_list['client-browser']);
-				$('#problem-level').val(form_value_list['problem-level']);
-				$('#cve-id').val(form_value_list['cve-id']);
-				$('#cvss-base-score').val(form_value_list['cvss-base-score']);
-				$('#cwe-id').val(form_value_list['cwe-id']);
-				$('#keywords').val(form_value_list['keywords']);
-				$('#configuration').val(form_value_list['configuration']);
-				//document.getElementById('planned-release{1}').value;
-				//document.getElementById('customer-escalation{1}').value;
-				//document.getElementById('responsible{1}').value;
-				//document.getElementById('systest-owner{1}').value;
-				$('#notify-list').val(form_value_list['notify-list']);
-				$('#customer').val(form_value_list['customer']);
-				$('#related-prs').val(form_value_list['related-prs']);
-				$('#rli').val(form_value_list['rli']);
-				$('#npi-program').val(form_value_list['npi-program']);
-				$('#testcase-id').val(form_value_list['testcase-id']);
-				$('#jtac-case-id').val(form_value_list['jtac-case-id']);
-				$('#support-notes').val(form_value_list['support-notes']);
-				$('#supporting-device-release').val(form_value_list['supporting-device-release']);
-				//$('#supporting-device-product').val(form_value_list['supporting-device-product']);
-				$('#supporting-device-platform').val(form_value_list['supporting-device-platform']);
-				$('#supporting-device-sw-image').val(form_value_list['supporting-device-sw-image']);
-				//$('#description').val(form_value_list['description']);
-				$('#corefile-location').val(form_value_list['corefile-location']);
-				$('#corefile-stacktrace').val(form_value_list['corefile-stacktrace']);
-				//$('#environment').val(form_value_list['environment']);
-				//$('#how-to-repeat').val(form_value_list['how-to-repeat']);
-				$('#beta-programs').val(form_value_list['beta-programs']);
-				$('#release-build-date').val(form_value_list['release-build-date']);
-				$('#beta-customers').val(form_value_list['beta-customers']);
-				$('#release-deploy-date').val(form_value_list['release-deploy-date']);
-				$('#fix').val(form_value_list['fix']);
-				*/
+					delete form_value_list['attributes'];
+				};
 				
+				//type 4: for fireEvent child item
+				var type4_items=['found-during','platform','software-image','supporting-device-platform','supporting-device-sw-image'];
+				$.each(type4_items, function(n,my_value){
+						if (!isEmptyValue(form_value_list[my_value]))  { 
+								setTimeout(function() {$("#"+my_value).val(form_value_list[my_value]);}, 0);
+								delete form_value_list[my_value];
+						}
+				});
+								
+				
+				//type 5: normal value
+				//write other value to web form
+				$.each(form_value_list, function(n,my_value){
+							$("#"+n).val(my_value);
+				});
+				
+
 				//public template value
 				//description,environment,how-to-repeat
 				var public_value_list=local_to_obj(public_name);
 				if (!isEmptyValue(public_value_list)) {
-						$.each(public_value_list, function(i, field){
-							$("#"+i).val(field);
+						$.each(public_value_list, function(n, my_value){
+							$("#"+n).val(my_value);
 						});
-					}
 				}
+				document.getElementById('synopsis').focus();
+			}
 		}
 		else {
 				alert("Sorry,You are not in PR Create page!");

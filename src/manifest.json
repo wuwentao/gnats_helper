@@ -26,9 +26,9 @@
 	  "matches": [ "https://gnats.juniper.net/*" ],
       "run_at": "document_end"
    } ],
-   "content_security_policy": "script-src 'self' https://10.208.180.10; object-src 'self';",
+   "content_security_policy": "script-src 'self' https://spur.englab.juniper.net; object-src 'self';",
    "description": "Juniper Gnats Helper",
-   "homepage_url": "http://10.208.180.10/root/wtwu",
+   "homepage_url": "http://spur.englab.juniper.net/wtwu/",
    "icons": {
       "128": "libs/icons/icon_128.png",
       "16": "libs/icons/icon_16.png",
@@ -38,8 +38,7 @@
    "manifest_version": 2,
    "minimum_chrome_version": "18.0",
    "name": "Juniper Gnats Helper Version 0.1",
-   "permissions": [ "https://gnats.juniper.net/*", "https://10.208.180.10/*", "https://*.juniper.net/*", "notifications", "webRequest", "webRequestBlocking" ],
-   "update_url": "http://10.208.180.10/root/wtwu/gnats/update.xml",
+   "permissions": [ "https://gnats.juniper.net/*", "https://spur.englab.juniper.net/*", "https://*.juniper.net/*", "notifications", "webRequest", "webRequestBlocking" ],
    "web_accessible_resources": ["libs/fonts/*","libs/font-awesome/fonts/*"],
     "version": "0.1"
 }
