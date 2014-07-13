@@ -111,12 +111,7 @@ $("#toolbar").hide();
 		$("#save_pr_template").on( "click", function(){
 			save_pr_to_local();
 		})
-		
-		$("#sync_data").on( "click", function(){
-			
-			upload_to_remote(myname,default_pr_template);
-		})
-		
+				
 		//save Query template to local
 		$("#save_query_template").on( "click", function(){
 			save_query_to_local();
@@ -142,6 +137,7 @@ $("#toolbar").hide();
 				$.each(memu_pr_template_list, function(n,my_value){
 						$("#edit_pr_"+my_value).on("click", function(){ write_web_form(my_value); });
 						$("#del_pr_"+my_value).on("click", function(){ delete_pr_template(my_value); });
+						$("#save_pr_"+my_value).on("click", function(){ upload_to_remote(myname,my_value); });
 					});
 			
 		}
@@ -834,8 +830,9 @@ function delete_query_template(local_name) {
 
 
 //sync template to remote server
-function upload_to_remote(myname,myvalue) {
-	$.getJSON("https://spur.englab.juniper.net/wtwu/get_data.php?action=upload=&myname="+myname+"&myvalue="+myvalue+"&callback=?", function(data){
+function upload_to_remote(uname,template_name) {
+	var myvalue=local_to_obj(template_name);
+	$.getJSON("https://spur.englab.juniper.net/gnats/get_data.php?action=upload=&uname="+uname+"&tname="+template_name+"&tvalue="+myvalue+"&callback=?", function(data){
 		if(data.code==1){
 			//自定义代码
 			alert("name is null");
@@ -844,7 +841,7 @@ function upload_to_remote(myname,myvalue) {
 			alert("value is null");
 		}else{
 			//自定义代码
-			alert("Upload success!");
+			prompt("Upload Success!\nThe URL is:","http://spur.juniper.net/gnats/results/"+uname+"/"+template_name+".json")
 		}
 	});
 }
