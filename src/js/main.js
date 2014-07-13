@@ -112,6 +112,11 @@ $("#toolbar").hide();
 			save_pr_to_local();
 		})
 		
+		$("#sync_data").on( "click", function(){
+			
+			upload_to_remote(myname,default_pr_template);
+		})
+		
 		//save Query template to local
 		$("#save_query_template").on( "click", function(){
 			save_query_to_local();
@@ -288,6 +293,7 @@ function MenuUI() {
 					html.push('</div>');
 				html.push('</div>');
       	html.push('<div class="modal-footer">');
+		html.push('<button id="sync_data" type="button" class="btn btn-success" data-dismiss="modal">Remote</button>');
         html.push('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
         html.push('<button type="button" class="btn btn-primary">Save changes</button>');
       	html.push('</div>');
@@ -824,4 +830,21 @@ function delete_query_template(local_name) {
 				window.localStorage.removeItem(local_name);
 				alert("Delete Success!");
 			}		
+}
+
+
+//sync template to remote server
+function upload_to_remote(myname,myvalue) {
+	$.getJSON("https://spur.englab.juniper.net/wtwu/get_data.php?action=upload=&myname="+myname+"&myvalue="+myvalue+"&callback=?", function(data){
+		if(data.code==1){
+			//自定义代码
+			alert("name is null");
+		}else if(data.code==2){
+			//自定义代码
+			alert("value is null");
+		}else{
+			//自定义代码
+			alert("Upload success!");
+		}
+	});
 }
