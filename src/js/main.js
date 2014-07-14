@@ -282,14 +282,13 @@ function MenuUI() {
 						if (!isEmptyValue(memu_pr_template_list)) {
 							html.push('<ul>');
 								$.each(memu_pr_template_list, function(n,my_value){
-								html.push('<a href="Javascript:void(0)" class="list-group-item"> <div class="btn btn-danger btn-xs" id="del_pr_'+my_value+'">  <i class="fa fa-trash-o"></i> Delete</div>     '+my_value+'    </a> ');
+								html.push('<a href="Javascript:void(0)" class="list-group-item"> <div class="btn btn-danger btn-xs" id="del_pr_'+my_value+'">  <i class="fa fa-trash-o"></i> Delete</div>  <div class="btn btn-success btn-xs" id="save_pr_'+my_value+'">  <i class="fa fa-cloud-upload"></i> Upload</div>   '+my_value+'    </a> ');
 							});
 							html.push('</ul>');
 						}
 					html.push('</div>');
 				html.push('</div>');
       	html.push('<div class="modal-footer">');
-		html.push('<button id="sync_data" type="button" class="btn btn-success" data-dismiss="modal">Remote</button>');
         html.push('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
         html.push('<button type="button" class="btn btn-primary">Save changes</button>');
       	html.push('</div>');
@@ -310,7 +309,7 @@ function MenuUI() {
 						if (!isEmptyValue(memu_query_template_list)) {
 							html.push('<ul>');
 								$.each(memu_query_template_list, function(n,my_value){
-								html.push('<a href="Javascript:void(0)" class="list-group-item"> <div class="btn btn-danger btn-xs" id="del_query_'+my_value+'">  <i class="fa fa-trash-o"></i> Delete</div>     '+my_value+'    </a> ');
+								html.push('<a href="Javascript:void(0)" class="list-group-item"> <div class="btn btn-danger btn-xs" id="del_query_'+my_value+'">  <i class="fa fa-trash-o"></i> Delete</div>      '+my_value+'    </a> ');
 							});
 							html.push('</ul>');
 						}
@@ -832,7 +831,19 @@ function delete_query_template(local_name) {
 //sync template to remote server
 function upload_to_remote(uname,template_name) {
 	var myvalue=local_to_obj(template_name);
-	$.getJSON("https://spur.englab.juniper.net/gnats/get_data.php?action=upload=&uname="+uname+"&tname="+template_name+"&tvalue="+myvalue+"&callback=?", function(data){
+	myvalue=encodeURI(JSON.stringify(myvalue));
+	var myurl="https://spur.englab.juniper.net/gnats/get_data.php?action=upload=&uname="+uname+"&tname="+template_name+"&tvalue="+myvalue+"&callback=?";
+	$.ajax({
+		type: 'POST',
+		url: myurl,
+		data: myvalue,
+		success: function(data){ console.log(data);  },
+		dataType:'json'
+	});
+	
+	/*
+	$.getJSON(myurl, function(data){
+		console.log(data);
 		if(data.code==1){
 			//自定义代码
 			alert("name is null");
@@ -844,4 +855,6 @@ function upload_to_remote(uname,template_name) {
 			prompt("Upload Success!\nThe URL is:","http://spur.juniper.net/gnats/results/"+uname+"/"+template_name+".json")
 		}
 	});
+	*/
+
 }
