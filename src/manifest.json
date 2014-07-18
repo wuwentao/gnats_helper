@@ -5,7 +5,7 @@
    "browser_action": {
       "default_icon": "libs/icons/icon_32.png",
       "default_popup": "popup.html",
-      "default_title": "Juniper Gnats Helper"
+      "default_title": "Gnats Helper"
    },
    "options_page": "options.html",
    "content_scripts": [ {
@@ -27,8 +27,8 @@
       "run_at": "document_end"
    } ],
    "content_security_policy": "script-src 'self' https://spur.englab.juniper.net; object-src 'self';",
-   "description": "Juniper Gnats Helper",
-   "homepage_url": "http://spur.englab.juniper.net/wtwu/",
+   "description": "Gnats Helper",
+   "homepage_url": "https://spur.englab.juniper.net/",
    "icons": {
       "128": "libs/icons/icon_128.png",
       "16": "libs/icons/icon_16.png",
@@ -37,8 +37,8 @@
    },
    "manifest_version": 2,
    "minimum_chrome_version": "18.0",
-   "name": "Juniper Gnats Helper Version 0.1",
+   "name": "Gnats Helper",
    "permissions": [ "https://gnats.juniper.net/*", "https://spur.englab.juniper.net/*", "https://*.juniper.net/*", "notifications", "webRequest", "webRequestBlocking" ],
    "web_accessible_resources": ["libs/fonts/*","libs/font-awesome/fonts/*"],
-    "version": "0.1"
+    "version": "0.1.4"
 }

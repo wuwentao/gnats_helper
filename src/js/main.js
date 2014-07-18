@@ -3,10 +3,22 @@
  *
  * Created on: 2014-03-08
  * Author: wtwu@juniper.net
- * Latest version will be stored in http://10.208.180.10/root/wtwu/gnats/
+ * Latest version will be stored in http://spur.englab.juniper.net/gnats/
  *
  **/
 
+ //get db info
+var dbinfo=$("#dbinfo").html();
+var mytemp=/user:\ *(\w*)/im;
+var myresult=dbinfo.match(mytemp);
+var myname=myresult[1];
+
+//get appid path
+//fonts will use this path to load
+//var fontURL = chrome.extension.getURL("libs/fonts/OpenSans.woff");
+//var fontURL = chrome.extension.getURL("libs/font-awesome/fonts/fontawesome-webfont.woff");
+//alert(fontURL1);
+//alert(fontURL2); 
  
 //define public info
 var  pr_template_list="__PR_TEMPLATE_LIST__";
@@ -16,7 +28,7 @@ var  gnats_helper_ver="0.1"
 var  default_pr_name = "Default_PR";
 var  default_pr_template = '{"synopsis":"Department:Project:Feature-Tested:Subcategory(optional):<one-line summary>"}';
 var  default_query_name = "Default_Query";
-var  default_query_template = '(responsible == "wtwu" & state != "suspended" & state != "closed")';
+var  default_query_template = '(responsible == "'+myname+'" & state != "suspended" & state != "closed")';
 
 var  public_name="__PUBLIC_TEMPLATE__"
 var  public_template =  '{"description":"##################################################################\\n1.    SYMPTOMS AND FREQUENCY OF OCCURRENCE\\n##################################################################\\nREPLACE WITH SYMPTOMS AND FREQUENCY OF OCCURRENCE\\n\\n\\n\\n##################################################################\\n2.    EXPECTED-BEHAVIOR\\n##################################################################\\nREPLACE WITH EXPECTED-BEHAVIOR\\n\\n\\n\\n##################################################################\\n3.    ORIGINATOR-ANALYSIS\\n      E.G. MAIN-FINDINGS, EXCERPTS OF RELEVANT COUNTERS/LOGS/SHOW COMMANDS\\n##################################################################\\nREPLACE WITH ORIGINATOR-ANALYSIS \\n\\n\\n\\n#################################################################################\\n4.    MORE-INFO\\n      E.G. LOCATION OF COMPLETE CONFIGS, SYSLOGS, FDA OUTPUT, DETAILED COUNTERS\\n#################################################################################\\nREPLACE WITH MORE-INFO\\n\\n\\n##################################################################\\n5.    METADATA (DO NOT MODIFY METADATA VALUES!!!)\\n##################################################################\\nMETADATA_START\\nTEMPLATE_TYPE:SBU\\nTEMPLATE_VERSION:2012071302\\nMETADATA_END",\
@@ -79,18 +91,6 @@ check_default();
 var memu_pr_template_list=get_template_list(pr_template_list);
 var memu_query_template_list=get_template_list(query_template_list);
 
-var dbinfo=$("#dbinfo").html();
-var mytemp=/user:\ *(\w*)/im;
-var myresult=dbinfo.match(mytemp);
-var myname=myresult[1];
-
-//get appid path
-//fonts will use this path to load
-//var fontURL = chrome.extension.getURL("libs/fonts/OpenSans.woff");
-//var fontURL = chrome.extension.getURL("libs/font-awesome/fonts/fontawesome-webfont.woff");
-//alert(fontURL1);
-//alert(fontURL2);
-
 
 var ui_menu=MenuUI();
 var ui_div=DivUI();
@@ -120,6 +120,11 @@ $("#toolbar").hide();
 		//Import remote template to local
 		$("#import_remote").on( "click", function(){
 			import_to_local();
+		})
+		
+		//edit_pr in PR view page
+		$("#edit_cur_pr").on( "click", function(){
+			edit_cur_pr();
 		})
 		
 		//hide gnats helper
@@ -197,7 +202,7 @@ function MenuUI() {
 		html.push('<ul>');
 		html.push('<li><a href="/web/default/create">Create PR</a></li>');
 		html.push('<li><a href="/web/default/query/">Query PR</a></li>');
-		html.push('<li><a href="/web/default/edit/">Edit This PR</a></li>');
+		html.push('<li id="edit_cur_pr"><a href="Javascript:void(0)">Edit This PR</a></li>');
 		html.push('<li class="hide"><a href="Javascript:void(0)">Add Audit-Trial</a></li>');
 		html.push('<li class="hide"><a href="Javascript:void(0)">QA Action</a>');
 			html.push('<ul>');
@@ -262,8 +267,8 @@ function MenuUI() {
 		html.push('<li><a href="/web/default/az-help">a-z Fields</a></li>');
 		html.push('<li><a href="/web/default/changes">Gnats Changes</a></li>');
 		html.push('<li><a href="mailto:wtwu@juniper.net?subject=Report a Gnats Helper Bug">Report Bug</a></li>');
-		html.push('<li><a href="mailto:wtwu@juniper.net?subject=Gnats Helper new requirement">New Requirement</a></li>');
-		html.push('<li><a href="Javascript:void(0)">About Gnats Helper</a></li>');
+		html.push('<li class="hide"><a href="mailto:wtwu@juniper.net?subject=Gnats Helper new requirement">New Requirement</a></li>');
+		html.push('<li class="hide"><a href="Javascript:void(0)">About Gnats Helper</a></li>');
 		html.push('</ul>');
 	html.push('</li>');
     html.push('<li class="search">');
@@ -357,8 +362,10 @@ function local_to_obj(local_name) {
 }
 //javascript object to localStorage
 function obj_to_local(obj_name,local_name) {
-		if ( !isEmptyValue(obj_name) && !isEmptyValue(local_name))  {
+		if ( !isEmptyValue(obj_name) && !isEmptyValue(local_name) &&typeof(obj_name)==="object" )  {
 			localStorage.setItem(local_name,JSON.stringify(obj_name));
+		}else if (!isEmptyValue(obj_name) && !isEmptyValue(local_name) &&typeof(obj_name)==="string") {
+			localStorage.setItem(local_name,obj_name);
 		}
 		else {
 			alert("Sorry,not found obj_name or local_name");
@@ -473,8 +480,9 @@ function get_template_name(type) {
 			var myreg=/^[\w|_]+$/;
 			if (myreg.test(template_name) ) {
 				if (!isEmptyValue(memu_pr_template_list) && !isEmptyValue(memu_query_template_list))  {
-					var my_result=$.inArray(template_name, data_list)
-					if (my_result!="-1") {
+					var my_result1=$.inArray(template_name, memu_pr_template_list);
+					var my_result2=$.inArray(template_name, memu_query_template_list);
+					if (my_result1!="-1" && my_result2!="-1") {
 						alert("Sorry!\n\nTemplate name already exist in local,\n\nPlease input a new one!");
 					} else  {
 						return template_name;
@@ -534,7 +542,7 @@ function check_localStorage() {
 //save PR form data to localStorage
 function save_pr_to_local() {
 		//check create_form and form value is not null
-		var create_form=document.getElementById("from:").value;
+		var create_form=$("#from\\:").val();
 		if (!isEmptyValue(create_form)) {
 			var my_template_obj=get_web_form();
 			var my_template_name=get_template_name("pr");
@@ -573,13 +581,13 @@ function set_focus_value(obj_id, obj_value) {
 //write PR form value from local template
 function write_web_form(local_name) {
 		//check create_form and problem-level form value is not null
-		var create_form=document.getElementById("from:").value;
+		var create_form=$("#from\\:").val();
 		if (!isEmptyValue(create_form)) {
 			
 			//local temlate value ,form_value_list is not null
 			var form_value_list=local_to_obj(local_name);
 			if (!isEmptyValue(form_value_list)) {
-
+				
 				//write these values to web form
 				//type 1: for fireEvent part :  [submitter-id,product,supporting-device-product]
 				//type 2: for auto-completion part,need to focus() : [reported-in,last-known-working-release,category,cwe-id,planned-release{1},responsible{1},systest-owner{1},notify-list,testcase-id,npi-program]
@@ -599,7 +607,6 @@ function write_web_form(local_name) {
 				$.each(type1_items, function(n,my_value){
 						if (!isEmptyValue(form_value_list[my_value]))  { 
 								document.getElementById(my_value).onload = set_fireEvent_value(my_value, form_value_list[my_value], 'change');
-								console.log(form_value_list[my_value]);
 								delete form_value_list[my_value];
 						}
 				});
@@ -629,7 +636,6 @@ function write_web_form(local_name) {
 								//setTimeout(function() {document.getElementById(my_value).value = form_value_list[my_value];}, 0);
 								document.getElementById(my_value).focus();
 								setTimeout(function() { $("#"+my_value).val(form_value_list[my_value]);}, 1000);
-								console.log(my_value,form_value_list[my_value]);
 								delete form_value_list[my_value];
 						}
 				});
@@ -764,10 +770,11 @@ function  query_pr(query_name)  {
 		if (!isEmptyValue(query_name))   {
 			var expr_value = localStorage.getItem(query_name);
 			if (!isEmptyValue(expr_value))   {
-				//replace the first and last " ,replace \ in the string
+				/*replace the first and last " ,replace \ in the string
 				expr_value=expr_value.replace(/^"/,"");
 				expr_value=expr_value.replace(/"$/,"");
 				expr_value=expr_value.replace(/\\/g,"");
+				*/
 				var columns='synopsis,reported-in,submitter-id,product,category,problem-level,blocker,planned-release,state,responsible,originator';
 				window.location = "https://gnats.juniper.net/web/default/do-query?adv=1&columns="+escape(columns)+"&expr="+escape(expr_value);
 			}
@@ -806,9 +813,7 @@ function upload_to_remote(uname,template_name) {
 		type: 'POST',
 		url: myurl,
 		data: myvalue,
-		success: function(data){ 
-					window.open("https://spur.englab.juniper.net/wtwu/index.php");
-			     },
+		success: function(data){ },
 		dataType:'json'
 	});
 	
@@ -830,19 +835,42 @@ function upload_to_remote(uname,template_name) {
 //import remote template to localStorage
 function import_to_local() {
 	var url=get_template_name("url");
-	var mytemp=/\/(_*|\w*).json$/im;
+	var mytemp=/\/([_\w]*).json$/im;
 	var myresult=url.match(mytemp);
 	var template_name=myresult[1];
 	$("#load_remote").load(url,function(responseTxt,statusTxt,xhr){
 			if(statusTxt=="success")
-				var template_value=responseTxt;
+				var template_value=responseTxt.toString();
 				if (!isEmptyValue(template_value) && !isEmptyValue(template_name)) {
 					template_name_to_local(template_name,pr_template_list);
 					template_data_to_local(template_value,template_name)
 				}
-				alert("load success!");
+				alert("Import remote template success!");
 			if(statusTxt=="error")
-				alert("load Error: "+xhr.status+": "+xhr.statusText);
+				alert("Import Error: "+xhr.status+": "+xhr.statusText);
 		});
+}
 
+//Edit current PR
+function edit_cur_pr(){
+	var url=window.location.href;
+	//format 1: https://gnats.juniper.net/web/default/971251-1
+	//format 2: https://gnats.juniper.net/web/default/971251-1/edit
+	//format 3: https://gnats.juniper.net/web/default/dwim?s=971251-1
+	var mytemp1=/https\:\/\/gnats\.juniper\.net\/web\/default\/([-\d]{4,})$/im;
+	var mytemp2=/https\:\/\/gnats\.juniper\.net\/web\/default\/([-\d]{4,})\/edit$/im;
+	var mytemp3=/https\:\/\/gnats\.juniper\.net\/web\/default\/dwim\?s\=([-\d]{4,})$/im;
+	if (mytemp1.test(url) ) {
+		var new_url=url+"/edit";
+		window.location=new_url;
+	} else if (mytemp2.test(url)) {
+		window.location=url;
+	} else if (mytemp3.test(url)) {
+		var myresult=url.match(mytemp3);
+		var pr_num=myresult[1];
+		var new_url="https://gnats.juniper.net/web/default/"+pr_num+"/edit";
+		window.location=new_url;
+	} else {
+		alert("Sorry!You are not in PR view page.\n\nWe can't found any matched PR number in your URL!");
+	}
 }
