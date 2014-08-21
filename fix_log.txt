@@ -1,0 +1,3 @@
+v0.1.5 fix two bug:
+1.Can't scroll to bottom in different tab,fixed scrollHeight
+2.Template can save as the same name£¬fixed it with can't save with same name.

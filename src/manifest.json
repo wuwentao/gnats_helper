@@ -40,5 +40,5 @@
    "name": "Gnats Helper",
    "permissions": [ "https://gnats.juniper.net/*", "https://spur.englab.juniper.net/*", "https://*.juniper.net/*", "notifications", "webRequest", "webRequestBlocking" ],
    "web_accessible_resources": ["libs/fonts/*","libs/font-awesome/fonts/*"],
-    "version": "0.1.4"
+    "version": "0.1.5"
 }

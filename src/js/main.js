@@ -176,8 +176,7 @@ function DivUI() {
 	//start to add javascript to gnats web
 	html.push('<script type="text/javascript">');
     html.push('$("#toTop").click( function () { $("html,body").animate({ "scrollTop" : 0 }, 500); });');
-    html.push('var windowHeight = parseInt($("body").css("height" ));');
-    html.push('$( "#toBottom").click(function () { $( "html,body").animate({ "scrollTop" : windowHeight }, 500); });');
+    html.push('$( "#toBottom").click(function () { var windowHeight = parseInt(document.body.scrollHeight); $( "html,body").animate({ "scrollTop" : windowHeight }, 500); });');
 	html.push('</script>');
 	//end to add javascript to gnats web
 	
@@ -482,7 +481,7 @@ function get_template_name(type) {
 				if (!isEmptyValue(memu_pr_template_list) && !isEmptyValue(memu_query_template_list))  {
 					var my_result1=$.inArray(template_name, memu_pr_template_list);
 					var my_result2=$.inArray(template_name, memu_query_template_list);
-					if (my_result1!="-1" && my_result2!="-1") {
+					if (my_result1!="-1" || my_result2!="-1") {
 						alert("Sorry!\n\nTemplate name already exist in local,\n\nPlease input a new one!");
 					} else  {
 						return template_name;
